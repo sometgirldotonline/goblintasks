@@ -1,0 +1,215 @@
+:root {
+    --bgc: #f0fef6;
+    --fgc: #010e06;
+    --primary: #0bf661;
+    --secondary: #76b4fa;
+    --accent: #4e60f8;
+    --navheight: 35px;
+}
+
+body {
+    margin: 0px;
+    background-color: var(--bgc);
+    font-family: sans-serif;
+    color: var(--fgc);
+    overflow: hidden;
+}
+
+section.sidebar {
+    display: none;
+}
+
+main:has(input#navtoggle:checked) section.sidebar {
+    display: block;
+}
+
+section.sidebar {
+    width: 15vw;
+    height: 100vh;
+    position: absolute;
+    left: 0px;
+    top: 35px;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: var(--bgc);
+    padding: 10px;
+}
+
+nav.navbar {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: calc(100vw - 12px);
+    height: calc(var(--navheight) - 12px);
+    display: block;
+    z-index: 1;
+    padding: 6px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: var(--bgc);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: normal;
+    align-content: normal;
+}
+
+.navbar * {
+    vertical-align: middle;
+}
+
+section.maincontent {
+    position: absolute;
+    display: block;
+
+    top: var(--navheight);
+    left: 0px;
+    width: calc(100vw - 40px) !important;
+    padding-left: 20px;
+    padding-top: 20px;
+    height: 100vh;
+}
+
+main:has(input#navtoggle:checked) section.maincontent {
+    left: calc(15vw + 20px);
+    width: calc(100vw - 15vw - 60px) !important;
+
+}
+
+section.card {
+    background-color: hsl(142, 93%, 50%, 5%);
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: #010e0647 2px 2px 10px;
+    width: fit-content;
+}
+
+section.tasksSect {
+    width: calc(100% - 30px);
+}
+
+.title {
+    font-weight: bold;
+    color: var(--accent);
+    text-align: center;
+    display: inline-block;
+}
+
+section.title {
+    display: block;
+    width: 100%;
+}
+
+ul.tasksList li {
+    list-style-type: none;
+    margin: 0px;
+    display: block;
+    margin-bottom: 10px;
+
+}
+
+ul.tasksList li.complete::before {
+    content: "✅";
+    display: inline-block;
+    font-size: 1.3em;
+    margin-right: 5px;
+    transform: translateY(-8px);
+}
+
+ul.tasksList li.incomplete::before {
+    content: "⚠️";
+    display: inline-block;
+    font-size: 1.3em;
+    margin-right: 5px;
+    transform: translateY(-8px);
+}
+
+ul.tasksList li>span {
+    display: inline-block;
+}
+
+.taskDescription {
+    font-size: 0.7em;
+    margin-left: 2px;
+}
+
+.taskDescription,
+.taskDescription * {
+    display: inline;
+}
+
+ul.tasksList {
+    margin: 0px;
+    padding-inline-start: 0px;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+.taskworth {
+    font-weight: bold;
+}
+
+.taskworth::before {
+    content: "🪙 ";
+}
+
+.dueby {
+    font-weight: bold;
+}
+
+.dueby::before {
+    content: "🗓️ ";
+}
+
+.navtogglebtn {
+    padding: 5px;
+}
+
+nav .title {
+    width: 100vw;
+    position: absolute;
+    top: 6px;
+    left: 0px;
+    text-align: center;
+    z-index: -1;
+}
+
+nav .rhs>* {
+    all: unset;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    background-color: transparent;
+    font-size: 0.6em;
+    display: block;
+    vertical-align: middle;
+}
+
+nav .rhs {
+    display: flex;
+    gap: 5px;
+}
+
+nav,
+section.sidebar {
+    user-select: none;
+}
+
+section.sidebar button.active {
+    background-color: hsl(142, 93%, 50%, 5%);
+
+}
+
+section.sidebar button {
+    all: unset;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+    display: block;
+    font-size: 0.8em;
+    width: calc(100% - 25px);
+    padding: 8px;
+    text-align: left;
+    margin: 5px;
+}
