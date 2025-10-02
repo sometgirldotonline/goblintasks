@@ -224,3 +224,7 @@ __marimo__/
 
 cert.pem
 key.pem
+
+data.sqlite
+.sqlite
+src/data.sqlite

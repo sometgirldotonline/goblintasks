@@ -104,23 +104,14 @@ ul.tasksList li {
     margin: 0px;
     display: block;
     margin-bottom: 10px;
+    user-select: none;
 
 }
 
-ul.tasksList li.complete::before {
-    content: "✅";
-    display: inline-block;
-    font-size: 1.3em;
-    margin-right: 5px;
-    transform: translateY(-8px);
-}
-
-ul.tasksList li.incomplete::before {
-    content: "⚠️";
-    display: inline-block;
-    font-size: 1.3em;
-    margin-right: 5px;
-    transform: translateY(-8px);
+ul.tasksList>li>label {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
 }
 
 ul.tasksList li>span {
@@ -225,23 +216,31 @@ section.maincontent {
         width: calc(100vw - 40px) !important;
 
     }
+
     section.maincontent {
         left: 0;
         width: calc(100vw - 40px) !important;
 
     }
+
     main:has(input#navtoggle:checked) section.sidebar {
         display: none;
     }
 
-   section.sidebar {
+    section.sidebar {
         display: block;
         z-index: 10;
         width: calc(100vw - 21px);
     }
 
-     nav .title{
+    nav .title {
         display: none;
-     }
+    }
 
+}
+
+.taskcheck {
+    display: block;
+    transform: scale(1.5);
+    margin-right: 10px;
 }

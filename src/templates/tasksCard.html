@@ -1,0 +1,16 @@
+{% for row in tasks %}
+<li class="task" id="task-{{ row.taskID }}">
+    <label for="ckbx-{{ row.taskID }}">
+        <!-- checked value fixed by GPT, turns out you need to remove it to uncheck :/ -->
+        <input type="checkbox" class="taskcheck" id="ckbx-{{ row.taskID }}" {% if row.taskCompletion == 1 %}checked{% endif %}
+            onchange="updateTaskState('{{ row.taskID }}', this.checked)">
+        <span>{{ row.taskName }}<br>
+            <span class="taskDescription">
+                <i>Worth: </i><span class="taskworth">{{ row.taskValue }}</span> &middot;
+                <i>Due by: </i><span class="dueby"> {{ 'No Due Date' if row.dueBy == -1 else ( row.dueBy |
+                    timestamp_to_time('%Y-%m-%dT%H:%M:%SZ') ) }}</span>
+            </span>
+        </span>
+    </label>
+</li>
+{% endfor %}
