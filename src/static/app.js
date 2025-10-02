@@ -108,10 +108,17 @@ async function deleteTask(id) {
 
 function pageturn(page){
     pageEl = document.querySelector(`section[pagename=${page}]`)
+    console.log(`
+        Current Page: ${document.querySelector("section.maincontent.active").getAttribute("pagename")}
+        Page to: ${page}
+        New Page:`, pageEl, "\n\n")
+    if(pageEl.classList.contains("active")){
+        return "already active"
+    }
     document.querySelector(".sidebar button.active").classList.remove("active")
     document.querySelector(`button[pagename=${page}]`).classList.add("active")
-    pageEl.classList.add("active")
     document.querySelector("section.maincontent.active").classList.remove("active")
+    pageEl.classList.add("active")
     if(window.innerWidth < 667){
         document.querySelector("#navtoggle").checked = true
     }
