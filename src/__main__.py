@@ -311,13 +311,14 @@ def deleteTask():
         
         db = get_db()
         try:
-            cur = db.execute("SELECT * FROM tasks WHERE taskID = ?", (id,))
+            cur = db.execute("SELECT * FROM tasks WHERE taskID = ? AND ownerID = ?", (request.form["id"],session['github_id'],))
             # dumb name, just means store the value properly, into the users coin balance
             task = cur.fetchone()
             commitTaskEvasion = task["taskCompletion"] == 1                
-            cur = db.execute("DELETE FROM tasks WHERE taskID = ?",
+            cur = db.execute("DELETE FROM tasks WHERE taskID = ? AND ownerID = ?",
                 (
-                    id,
+                    int(request.form["id"]),
+                    session['github_id'],
                 ),
             )
             if commitTaskEvasion:
@@ -326,10 +327,6 @@ def deleteTask():
         except sqlite3.Error:
             state = "eDatabaseError"
             return f"""$0${state}"""
-        except sqlite3.Error:
-            state = "eDatabaseError"
-            return f"""$0${state}"""
-            
         # Get updated task list and total coins
         cur = db.execute(
             "SELECT * FROM tasks WHERE ownerID = ?", (session["github_id"],)
