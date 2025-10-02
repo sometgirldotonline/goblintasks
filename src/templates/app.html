@@ -11,10 +11,11 @@
 <body>
   <main class="app">
     <section class="sidebar">
-      <button class="navhome active">Home</button>
-      <button class="navsettings">Settings</button>
+      <button class="navhome active" pagename="home" onclick="pageturn('home')">Home</button>
+      <button class="navsettings" pagename="settings" onclick="pageturn('settings')">Settings</button>
       <button class="navabout">About</button>
-      <button class="contrib">Contribute</button>
+      <button class="contrib"
+        onclick="window.open('https://github.com/sometgirldotonline/goblintasks')">Contribute</button>
     </section>
     <nav class="navbar"><span class="lhs"><input type="checkbox" id="navtoggle" checked style="display: none;"><label
           class="navtogglebtn" for="navtoggle"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +27,7 @@
           onclick="if(confirm('Are you sure you wish to log-out?')){window.location.href='/logout'}">👤<span
             class="username">{{username}}</span></button></span>
     </nav>
-    <section class="homepage maincontent">
+    <section class="page maincontent active" pagename="home">
       <section class="tasksSect card"><span class="title">Tasks</span>
         <ul class="tasksList">
           {% include 'tasksCard.html' %}
@@ -42,6 +43,11 @@
           <input type="date" name="dueBy" id="dueBy">
           <input type="submit" value="Submit">
         </form>
+      </section>
+    </section>
+    <section class="page maincontent" pagename="settings">
+      <section class="datamgmt card"><span class="title">Data Management</span><br>
+        <button onclick="deleteaccount()">Delete my account (and it's data)</button>
       </section>
     </section>
   </main>

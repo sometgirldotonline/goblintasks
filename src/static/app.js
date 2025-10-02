@@ -105,3 +105,25 @@ async function deleteTask(id) {
         }
     }
 }
+
+function pageturn(page){
+    pageEl = document.querySelector(`section[pagename=${page}]`)
+    document.querySelector(".sidebar button.active").classList.remove("active")
+    document.querySelector(`button[pagename=${page}]`).classList.add("active")
+    pageEl.classList.add("active")
+    document.querySelector("section.maincontent.active").classList.remove("active")
+    if(window.innerWidth < 667){
+        document.querySelector("#navtoggle").checked = true
+    }
+}
+function deleteaccount(){
+    conf = confirm(`Byeee! Maybe we will meet again someday.
+        
+Are you sure you want to delete your account?
+
+(we definitely wont miss you /sarc)`)
+    if(conf){
+        alert("Goodbye.")
+        window.location.href = "/api/deleteaccount"
+    }
+}

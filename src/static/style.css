@@ -5,7 +5,23 @@
     --secondary: #76b4fa;
     --accent: #4e60f8;
     --navheight: 35px;
+    --cardbg: hsl(142, 93%, 50%, 5%);
+    --outline: rgba(0, 0, 0, 0.1);
 }
+/* dark mode is really ugly so we ignore it for now */
+/* 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bgc: #010e07;
+        --fgc: #f1fef6;
+        --primary: #09f660;
+        --secondary: #05438a;
+        --accent: #0718b0;
+        --cardbg: hsla(0, 0%, 100%, 0.045);
+        --outline: rgba(255, 255, 255, 0.1);
+        --navheight: 35px;
+    }
+} */
 
 body {
     margin: 0px;
@@ -29,7 +45,7 @@ section.sidebar {
     position: absolute;
     left: 0px;
     top: 35px;
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    border-right: 1px solid var(--outline);
     background-color: var(--bgc);
     padding: 10px;
 }
@@ -43,7 +59,7 @@ nav.navbar {
     display: block;
     z-index: 1;
     padding: 6px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid var(--outline);
     background-color: var(--bgc);
     display: flex;
     flex-direction: row;
@@ -74,7 +90,7 @@ section.maincontent {
     height: calc(100vh - var(--navheight) - 40px);
 }
 
-section.maincontent > *{
+section.maincontent>* {
     flex-grow: 1;
     flex-shrink: 1;
     height: fit-content;
@@ -87,7 +103,7 @@ main:has(input#navtoggle:checked) section.maincontent {
 }
 
 section.card {
-    background-color: hsl(142, 93%, 50%, 5%);
+    background-color: var(--cardbg);
     padding: 15px;
     border-radius: 5px;
     box-shadow: #010e0647 2px 2px 10px;
@@ -175,14 +191,14 @@ nav .title {
     transition: all 0.1s ease-in-out;
 }
 
-.rhs:not(nav .rhs){
+.rhs:not(nav .rhs) {
     float: right;
 }
 
 nav .rhs>* {
     all: unset;
     border-radius: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--outline);
     padding: 5px;
     background-color: transparent;
     font-size: 0.6em;
@@ -201,14 +217,14 @@ section.sidebar {
 }
 
 section.sidebar button.active {
-    background-color: hsl(142, 93%, 50%, 5%);
+    background-color: var(--cardbg);
 
 }
 
 section.sidebar button {
     all: unset;
     border-radius: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--outline);
     background-color: transparent;
     display: block;
     font-size: 0.8em;
@@ -236,64 +252,76 @@ section.maincontent {
         transform: scale(0.8);
         opacity: 0.8;
     }
+
     main:has(input#navtoggle:checked) section.maincontent {
         transform: scale(1);
         opacity: 1;
     }
+
     main:has(input#navtoggle:checked) section.sidebar {
         display: block;
-        position:absolute;
+        position: absolute;
         left: -100vw;
     }
+
     section.sidebar {
         display: block;
         z-index: 10;
         width: calc(100vw - 21px);
     }
+
     nav .title {
         text-align: left;
         margin-left: 40px;
         margin-top: 1px;
     }
 }
-@media (max-width: 320px){
-    nav .title{
+
+@media (max-width: 320px) {
+    nav .title {
         opacity: 0;
     }
 }
+
 .taskcheck {
     display: block;
     transform: scale(1.5);
     margin-right: 10px;
 }
 
-input[type=submit]{
-    all:unset;
+input[type=submit] {
+    all: unset;
     background-color: var(--accent);
     color: var(--bgc);
-    padding:8px;
+    padding: 8px;
     border-radius: 5px;
     display: block;
     margin-left: auto;
     margin-right: auto;
-    margin-top:5px;
+    margin-top: 5px;
     width: calc(100% - 15px);
     text-align: center;
 }
-form label{
+
+form label {
     display: block;
     margin-top: 10px;
 }
-form input{
-    all:unset;
+
+form input {
+    all: unset;
     background-color: var(--secondary);
-    padding:5px;
+    padding: 5px;
     border-radius: 5px;
     width: calc(100% - 10px);
 }
 
-.task button{
+.task button {
     background: none;
     border: 0px;
     outline: none;
+}
+
+.page:not(.active) {
+    display: none;
 }

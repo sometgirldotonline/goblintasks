@@ -1,6 +1,6 @@
 
 x 2025-10-02 2025-10-02 Make tasks toggleable, and use normal checkboxes instead of emojis
-x 2025-10-02 2025-10-02 Add task creation functionality
+x 2025-10-02 2025-10-02 Add task crea   tion functionality
 2025-10-02 remove all emojis, use real icons fool
            - no
 2025-10-02 Add settings page (with capability to delete account and data)
