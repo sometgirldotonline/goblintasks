@@ -32,8 +32,8 @@
           {% include 'tasksCard.html' %}
         </ul>
       </section>
-      <section class="tasksSect card"><span class="title">Add Task</span>
-        <form action="/api/AddTask" method="post">
+      <section class="addTaskSect card"><span class="title">Add Task</span>
+        <form class="addTaskForm">
           <label for="taskName">Task Name</label>
           <input type="text" name="taskName" id="taskName" required="true">
           <label for="taskValue">Task Value</label>

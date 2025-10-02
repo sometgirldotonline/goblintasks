@@ -32,3 +32,76 @@ async function updateTaskState(id, state) {
         console.error(error)
     }
 }
+
+async function addTask(ev) {
+    ev.preventDefault()
+    console.log(ev.srcElement)
+    try {
+        const atFetch = await fetch("https://gt.sometgirl.online/api/addTask", {
+            "body": new URLSearchParams({
+                taskName: ev.srcElement.taskName.value,
+                taskValue: ev.srcElement.taskValue.value,
+                dueBy: new Date(ev.srcElement.dueBy.value).getTime() / 1000,
+            }),
+            "method": "POST"
+        });
+        if (!atFetch.ok) {
+            throw new Error(`Server Sent Error: ${atFetch.status}`)
+        }
+        // this parser was rewritten by GPT because i have no clue
+        var result = await atFetch.text();
+        var [stateLine, selectorLine, coinsbalance, ...htmlLines] = result.split("\n");
+        var stateString = stateLine.replace("$1$", "");
+        var selector = selectorLine.replace("$", "");
+        var innerHTML = htmlLines.join("\n");
+        document.querySelector("#coinsBalanceValue").textContent = coinsbalance
+        if (stateString) {
+            document.querySelector(selector).innerHTML = innerHTML;
+        }
+
+        console.log('Update response:', result)
+    }
+    catch (error) {
+        alert(error)
+        console.error(error)
+    }
+}
+
+document.querySelector(".addTaskForm").addEventListener("submit", addTask)
+
+async function deleteTask(id) {
+    console.log(id)
+    if (confirm(`Are you sure you want to delete:"${document.querySelector(`#task-${id} .tasktitle`).textContent}"?`)) {
+        console.log(`Deletiing task ID: ${id}`)
+        try {
+            const resp = await fetch(`/api/deleteTask`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    id: id,
+                })
+            });
+            if (!resp.ok) {
+                throw new Error(`Server Sent Error: ${resp.status}`)
+            }
+            // this parser was rewritten by GPT because i have no clue
+            var result = await resp.text();
+            var [stateLine, selectorLine, coinsbalance, ...htmlLines] = result.split("\n");
+            var stateString = stateLine.replace("$1$", "");
+            var selector = selectorLine.replace("$", "");
+            var innerHTML = htmlLines.join("\n");
+            document.querySelector("#coinsBalanceValue").textContent = coinsbalance
+            if (stateString) {
+                document.querySelector(selector).innerHTML = innerHTML;
+            }
+
+            console.log('Update response:', result)
+        }
+        catch (error) {
+            alert(error)
+            console.error(error)
+        }
+    }
+}
