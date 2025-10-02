@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from flask_dance.contrib.github import make_github_blueprint, github
 load_dotenv()
 app = Flask(__name__)
+app.config.from_mapping({"DEBUG": True})
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(os.path.join(os.path.dirname(os.path.realpath(__file__)),"data.sqlite"))

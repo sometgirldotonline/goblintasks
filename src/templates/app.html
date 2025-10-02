@@ -21,8 +21,8 @@
             fill="none" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke="#000" stroke-width="2"
               d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg></label></span><span class="title">goblintasks</span><span class="rhs"><button class="coinsbalance">🪙
-          <span id="coinsBalanceValue">{{usercoins}}</span></button><button class="profile"
+          </svg></label></span><span class="title">goblintasks</span><span class="rhs"><button
+          class="coinsbalance v-currency" id="coinsBalanceValue">{{usercoins}}</button><button class="profile"
           onclick="if(confirm('Are you sure you wish to log-out?')){window.location.href='/logout'}">👤<span
             class="username">{{username}}</span></button></span>
     </nav>
@@ -31,6 +31,17 @@
         <ul class="tasksList">
           {% include 'tasksCard.html' %}
         </ul>
+      </section>
+      <section class="tasksSect card"><span class="title">Add Task</span>
+        <form action="/api/AddTask" method="post">
+          <label for="taskName">Task Name</label>
+          <input type="text" name="taskName" id="taskName" required="true">
+          <label for="taskValue">Task Value</label>
+          <input type="number" name="taskValue" id="taskValue" min=0 required="true" value=0>
+          <label for="dueBy">Due By <small><i>Optional!</i></small></label>
+          <input type="date" name="dueBy" id="dueBy">
+          <input type="submit" value="Submit">
+        </form>
       </section>
     </section>
   </main>

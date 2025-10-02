@@ -1,7 +1,7 @@
 
 x 2025-10-02 2025-10-02 Make tasks toggleable, and use normal checkboxes instead of emojis
-2025-10-02 remove all emojis, use real icons fool
 2025-10-02 Add task creation functionality
+2025-10-02 remove all emojis, use real icons fool
 2025-10-02 Add settings page (with capability to delete account and data)
 2025-10-02 Add Dark Mode
 2025-10-02 Build extension

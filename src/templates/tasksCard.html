@@ -6,9 +6,9 @@
             onchange="updateTaskState('{{ row.taskID }}', this.checked)">
         <span>{{ row.taskName }}<br>
             <span class="taskDescription">
-                <i>Worth: </i><span class="taskworth">{{ row.taskValue }}</span> &middot;
-                <i>Due by: </i><span class="dueby"> {{ 'No Due Date' if row.dueBy == -1 else ( row.dueBy |
-                    timestamp_to_time('%Y-%m-%dT%H:%M:%SZ') ) }}</span>
+                <i>Worth: </i><span class="taskworth v-currency">{{ row.taskValue }}</span> &middot;
+                <i>Due by: </i><span class="v-date dueby"> {{ 'No Due Date' if row.dueBy == -1 else ( row.dueBy |
+                    timestamp_to_time('%Y-%m-%d') ) }}</span>
             </span>
         </span>
     </label>
