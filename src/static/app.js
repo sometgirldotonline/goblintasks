@@ -1,21 +1,4 @@
-function processUpdate(data) {
-    data.pageUpdates.forEach((update) => {
-        if (update.action == "innerHTMLUpdate") {
-            document.querySelector(update.selector).innerHTML = update.value
-        }
-        else if (update.action == "innerText") {
-            document.querySelector(update.selector).innerText = update.value
-        }
-        else if (update.action == "execJS") {
-            eval(update.value)
-        }
-    })
 
-    if (data.state.charAt(0) == 0) {
-        alert(`The last action failed:
-Error Code: ${data.state.split("$")[1]}`)
-    }
-}
 
 async function updateTaskState(id, state) {
     console.log(`Updating task ID: ${id}, State: ${state}`)
@@ -41,6 +24,47 @@ async function updateTaskState(id, state) {
     }
 }
 
+function processUpdate(data) {
+    data.pageUpdates.forEach((update) => {
+        switch (update.action) {
+            case "innerHTMLUpdate":
+                document.querySelector(update.selector).innerHTML = update.value;
+                break;
+            case "innerTextUpdate":
+                document.querySelector(update.selector).innerText = update.value;
+                break;
+            case "outerHTMLUpdate":
+                document.querySelector(update.selector).outerHTML = update.value;
+                break;
+            case "reload":
+                window.location.reload();
+                break;
+            case "redirect":
+                window.location.href = update.value;
+                break;
+            case "serverSentModal":
+                serverSentModal(update.value|| {});
+                break;
+            default:
+                console.warn(`Unknown update: ${JSON.stringify(update)}`)
+        }
+    })
+
+    if (data.state.charAt(0) == 0) {
+        alert(`The last action failed:
+Error Code: ${data.state.split("$")[1]}`)
+    }
+}
+function serverSentModal(value) {
+    // Create a maintenance overlay
+    const overlay = document.querySelector("dialog")
+    overlay.setAttribute("open","open")
+    overlay.innerHTML = `
+                <span class=title>${!!value.title ? value.title : "No title supplied"}</span>
+                <p>${!!value.message ? value.message :  "No message supplied"}</p>
+                ${!!value.reloadButton ? '<button onclick="window.location.reload()">Reload Page</button>' : "<form method=dialog><input type=submit value=Close></form>"}
+    `;
+}
 async function addTask(ev) {
     ev.preventDefault()
     console.log(ev.srcElement)
@@ -56,7 +80,7 @@ async function addTask(ev) {
         if (!atFetch.ok) {
             throw new Error(`Server Sent Error: ${atFetch.status}`)
         }
-        processUpdate(await resp.json())
+        processUpdate(await atFetch.json())
 
     }
     catch (error) {

@@ -360,3 +360,7 @@ dialog > .card{
     position: relative;
     width: calc(100% - 30px);
 }
+dialog:not(:has(.card)){
+    padding: 15px;
+
+}

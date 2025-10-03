@@ -179,7 +179,8 @@ def generateUpdates(state):
                 "action": "innerHTMLupdate",
                 "selector": "ul.tasksList",
                 "value":render_template("tasksCard.html", tasks=res)
-            }
+            },
+            {"action":  "serverSentModal"}
         ]
     }
     return data
