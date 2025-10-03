@@ -13,6 +13,49 @@ need:
 - store work period statuses and such
 - store to purchase unblocks
 
+security/reliablility:
+- Validation
+- Ratelimit
+- SQL Injection prevention
 
+CQ/maintainability:
+- Error handling
+- Duplicated code
+- Magic numbers/strings
 
+UX:
+- Form validation
+- Accessibility
+- Responsive fixes (?)
 
+Performance:
+- Minification of CSS & JS
+ 
+Monitoring:
+- Logging
+- Health endpoint
+    - Svc uptime
+    - Disk usage
+    - Github api status
+    - FS perms
+    - CPU usage might still be good
+    - Requests per second?
+- Error monitoring
+
+Database:
+- Migrate to per-user SQLite files
+- User database file management
+- Database pruning for deleted users
+
+Containerisation:
+- Docker with Alpine (python:3.11-alpine)
+```
+FROM python:3.11-alpine
+# Alpine Linux is tiny (~5MB base)
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 5000
+CMD ["python", "app.py"]
+```
