@@ -557,4 +557,4 @@ def executeaccountdeletion():
     
     
 if __name__ == "__main__":
-    app.run(port=443, ssl_context=("cert.pem", "key.pem"))
+    app.run(port=os.getenv("port"), ssl_context=("cert.pem", "key.pem"))
