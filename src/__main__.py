@@ -24,6 +24,11 @@ import requests
 from requests.auth import HTTPBasicAuth
 load_dotenv()
 app = Flask(__name__)
+# fix reverse proxies
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
 app.config.from_mapping({"DEBUG": True})
 # done by chatGPT
 def revoke_github_token(user_token):
