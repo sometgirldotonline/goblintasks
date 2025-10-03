@@ -43,9 +43,9 @@ Monitoring:
 - Error monitoring
 
 Database:
-- Migrate to per-user SQLite files
-- User database file management
-- Database pruning for deleted users
+x 2025-10-03 - Migrate to per-user SQLite files
+x 2025-10-03 - User database file management
+x 2025-10-03 - Database pruning for deleted users
 
 Containerisation:
 - Docker with Alpine (python:3.11-alpine)
