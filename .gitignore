@@ -225,9 +225,10 @@ __marimo__/
 cert.pem
 key.pem
 
-data.sqlite
-.sqlite
-src/data.sqlite
+# data.sqlite
+# .sqlite
+# src/data.sqlite
+data
 
 
 #Ignore vscode AI rules
