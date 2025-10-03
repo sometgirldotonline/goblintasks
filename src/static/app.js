@@ -27,13 +27,13 @@ async function updateTaskState(id, state) {
 function processUpdate(data) {
     data.pageUpdates.forEach((update) => {
         switch (update.action) {
-            case "innerHTMLUpdate":
+            case "innerHTML":
                 document.querySelector(update.selector).innerHTML = update.value;
                 break;
-            case "innerTextUpdate":
+            case "innerText":
                 document.querySelector(update.selector).innerText = update.value;
                 break;
-            case "outerHTMLUpdate":
+            case "outerHTML":
                 document.querySelector(update.selector).outerHTML = update.value;
                 break;
             case "reload":
@@ -69,7 +69,7 @@ async function addTask(ev) {
     ev.preventDefault()
     console.log(ev.srcElement)
     try {
-        const atFetch = await fetch("https://gt.sometgirl.online/api/addTask", {
+        const atFetch = await fetch("/api/addTask", {
             "body": new URLSearchParams({
                 taskName: ev.srcElement.taskName.value,
                 taskValue: ev.srcElement.taskValue.value,

@@ -176,7 +176,7 @@ def generateUpdates(state):
              "selector": "#coinsBalanceValue",
              "value": totalValue},
             {
-                "action": "innerHTMLupdate",
+                "action": "innerHTML",
                 "selector": "ul.tasksList",
                 "value":render_template("tasksCard.html", tasks=res)
             },

@@ -17,6 +17,10 @@ security/reliablility:
 - Validation
 - Ratelimit
 - SQL Injection prevention
+- CSRF Protection for the account deletion, not validated according to Copilot
+- Sessions arent invalidated on logout
+- Ensure that database connection object is not none, if it is none, redirect user to login.
+- Ratelimiting.
 
 CQ/maintainability:
 - Error handling
