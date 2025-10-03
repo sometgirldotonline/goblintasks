@@ -9,6 +9,7 @@ from flask import (
     request,
     jsonify,
     session,
+    send_file
 )
 import shutil
 import jinja2
@@ -451,6 +452,9 @@ def goodbyecruelworld():
 <h1>EEK!</h1>
 You must have clicked a "prank" link or something! It tried to DELETE YOUR ACCOUNT :sob:<br>
 Don't worry, your data is safe :D <br>
+If you did request account deletion, you might want to download your data<br>
+Once downloaded, you can browse your user data using any SQLite viewer tool like <a href="https://sqliteviewer.app/">SQLiteViewer.app (runs entirely in your browser, your data is never sent anywhere, unaffiliated though) </a>
+<h1><a href="/api/getUserData">Click to download your data</a></h1>
 <h1><a href="/">Take me to goblintasks</a></h1>
 <small><i>you should probably smite the person that sent you this link, they're evil lmao</i></small>
     """
@@ -577,6 +581,22 @@ def executeaccountdeletion():
     except Exception as e:
         print(e)
         return f"Deletion failed: {str(e)}", 500
+
+@app.route("/api/getUserData", methods=["GET"])
+def getUserData():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    try:
+        return send_file(os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            os.getenv("dataDir"),
+            "userdata",
+            f"user_{session['github_id']}.sqlite",
+        ))
+    except Exception as e:
+        print(e)
+        return f"Download failed: {str(e)}", 500
+
 
 
 if __name__ == "__main__":
