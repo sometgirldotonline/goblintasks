@@ -7,3 +7,12 @@ x 2025-10-02 2025-10-02 Add task crea   tion functionality
 2025-10-02 Add Dark Mode
 2025-10-02 Build extension
 2025-10-02 Mobile App?
+
+need:
+- store pages to block
+- store work period statuses and such
+- store to purchase unblocks
+
+
+
+

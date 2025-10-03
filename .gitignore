@@ -228,3 +228,7 @@ key.pem
 data.sqlite
 .sqlite
 src/data.sqlite
+
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md

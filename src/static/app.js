@@ -128,7 +128,7 @@ function deleteaccount(){
         
 Are you sure you want to delete your account?
 
-(we definitely wont miss you /sarc)`)
+(we wont miss you, we literally wont remember you, your privacy matters.)`)
     if(conf){
         alert("Goodbye.")
         window.location.href = "/api/deleteaccount"
