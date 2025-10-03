@@ -1,3 +1,22 @@
+function processUpdate(data) {
+    data.pageUpdates.forEach((update) => {
+        if (update.action == "innerHTMLUpdate") {
+            document.querySelector(update.selector).innerHTML = update.value
+        }
+        else if (update.action == "innerText") {
+            document.querySelector(update.selector).innerText = update.value
+        }
+        else if (update.action == "execJS") {
+            eval(update.value)
+        }
+    })
+
+    if (data.state.charAt(0) == 0) {
+        alert(`The last action failed:
+Error Code: ${data.state.split("$")[1]}`)
+    }
+}
+
 async function updateTaskState(id, state) {
     console.log(`Updating task ID: ${id}, State: ${state}`)
     try {
@@ -14,18 +33,7 @@ async function updateTaskState(id, state) {
         if (!resp.ok) {
             throw new Error(`Server Sent Error: ${resp.status}`)
         }
-        // this parser was rewritten by GPT because i have no clue
-        var result = await resp.text();
-        var [stateLine, selectorLine, coinsbalance, ...htmlLines] = result.split("\n");
-        var stateString = stateLine.replace("$1$", "");
-        var selector = selectorLine.replace("$", "");
-        var innerHTML = htmlLines.join("\n");
-        document.querySelector("#coinsBalanceValue").textContent = coinsbalance
-        if (stateString) {
-            document.querySelector(selector).innerHTML = innerHTML;
-        }
-
-        console.log('Update response:', result)
+        processUpdate(await resp.json())
     }
     catch (error) {
         alert(error)
@@ -48,18 +56,8 @@ async function addTask(ev) {
         if (!atFetch.ok) {
             throw new Error(`Server Sent Error: ${atFetch.status}`)
         }
-        // this parser was rewritten by GPT because i have no clue
-        var result = await atFetch.text();
-        var [stateLine, selectorLine, coinsbalance, ...htmlLines] = result.split("\n");
-        var stateString = stateLine.replace("$1$", "");
-        var selector = selectorLine.replace("$", "");
-        var innerHTML = htmlLines.join("\n");
-        document.querySelector("#coinsBalanceValue").textContent = coinsbalance
-        if (stateString) {
-            document.querySelector(selector).innerHTML = innerHTML;
-        }
+        processUpdate(await resp.json())
 
-        console.log('Update response:', result)
     }
     catch (error) {
         alert(error)
@@ -86,18 +84,8 @@ async function deleteTask(id) {
             if (!resp.ok) {
                 throw new Error(`Server Sent Error: ${resp.status}`)
             }
-            // this parser was rewritten by GPT because i have no clue
-            var result = await resp.text();
-            var [stateLine, selectorLine, coinsbalance, ...htmlLines] = result.split("\n");
-            var stateString = stateLine.replace("$1$", "");
-            var selector = selectorLine.replace("$", "");
-            var innerHTML = htmlLines.join("\n");
-            document.querySelector("#coinsBalanceValue").textContent = coinsbalance
-            if (stateString) {
-                document.querySelector(selector).innerHTML = innerHTML;
-            }
+            processUpdate(await resp.json())
 
-            console.log('Update response:', result)
         }
         catch (error) {
             alert(error)
@@ -106,30 +94,30 @@ async function deleteTask(id) {
     }
 }
 
-function pageturn(page){
+function pageturn(page) {
     pageEl = document.querySelector(`section[pagename=${page}]`)
     console.log(`
         Current Page: ${document.querySelector("section.maincontent.active").getAttribute("pagename")}
         Page to: ${page}
         New Page:`, pageEl, "\n\n")
-    if(pageEl.classList.contains("active")){
+    if (pageEl.classList.contains("active")) {
         return "already active"
     }
     document.querySelector(".sidebar button.active").classList.remove("active")
     document.querySelector(`button[pagename=${page}]`).classList.add("active")
     document.querySelector("section.maincontent.active").classList.remove("active")
     pageEl.classList.add("active")
-    if(window.innerWidth < 667){
+    if (window.innerWidth < 667) {
         document.querySelector("#navtoggle").checked = true
     }
 }
-function deleteaccount(){
+function deleteaccount() {
     conf = confirm(`Byeee! Maybe we will meet again someday.
         
 Are you sure you want to delete your account?
 
 (we wont miss you, we literally wont remember you, your privacy matters.)`)
-    if(conf){
+    if (conf) {
         alert("Goodbye.")
         window.location.href = "/api/deleteaccount"
     }

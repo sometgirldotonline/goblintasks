@@ -161,7 +161,7 @@ def timestamp_to_time(value, thing):
 app.register_blueprint(blueprint, url_prefix="/login")
 
 
-def generateTasksUpdate(state):
+def generateUpdates(state):
     db = get_db()
     cur = db.execute(
         "SELECT COALESCE(SUM(transactionCost), 0) AS total_value FROM transactions;"
@@ -169,11 +169,20 @@ def generateTasksUpdate(state):
     totalValue = cur.fetchone()['total_value']
     cur = db.execute("SELECT * FROM tasks")
     res = cur.fetchall()
-    return f"""$1${state}
-$ul.tasksList
-{totalValue}
-{render_template("tasksCard.html", tasks=res)}
-"""
+    data = {
+        "state": state,
+        "pageUpdates": [
+            {"action": "innerText",
+             "selector": "#coinsBalanceValue",
+             "value": totalValue},
+            {
+                "action": "innerHTMLupdate",
+                "selector": "ul.tasksList",
+                "value":render_template("tasksCard.html", tasks=res)
+            }
+        ]
+    }
+    return data
 
 
 @app.route("/logout", methods=["GET"])
@@ -222,7 +231,7 @@ def notforyou():
 
 @app.route("/api/updateTaskState", methods=["POST"])
 def uts():
-    state = "it probably worked idk"
+    state = "1$it probably worked idk"
     selector = "ul.tasksList"
     if "id" in request.form and "state" in request.form:
         # Debug logging
@@ -305,14 +314,14 @@ def uts():
         #     "SELECT COALESCE(SUM(taskValue), 0) AS total_value FROM tasks WHERE ownerID = ? and taskCompletion = 1;",
         #     (session["github_id"],),
         # )
-        return generateTasksUpdate(state)
+        return generateUpdates(state)
     else:
-        return f"""$0${state}"""
+        return generateUpdates(f"0${state}")
 
 
 @app.route("/api/addTask", methods=["POST"])
 def addTask():
-    state = "it probably worked idk"
+    state = "1$it probably worked idk"
     selector = "ul.tasksList"
     if (
         "dueBy" in request.form
@@ -332,11 +341,11 @@ def addTask():
 
             if not task_name:
                 state = "eEmptyTaskName"
-                return f"""$0${state}"""
+                return generateUpdates(f"0${state}")
 
         except ValueError:
             state = "eInvalidNumber"
-            return f"""$0${state}"""
+            return generateUpdates(f"0${state}")
 
         db = get_db()
         try:
@@ -372,20 +381,20 @@ INSERT INTO tasks (
             db.commit()
         except sqlite3.Error:
             state = "eDatabaseError"
-            return f"""$0${state}"""
+            return generateUpdates(f"0${state}")
         except sqlite3.Error:
             state = "eDatabaseError"
-            return f"""$0${state}"""
+            return generateUpdates(f"0${state}")
 
-        return generateTasksUpdate(state)
+        return generateUpdates(state)
 
     else:
-        return generateTasksUpdate(state)
+        return generateUpdates(state)
 
 
 @app.route("/api/deleteTask", methods=["POST"])
 def deleteTask():
-    state = "it probably worked idk"
+    state = "1$it probably worked idk"
     selector = "ul.tasksList"
     if "id" in request.form:
         if not github.authorized:
@@ -397,11 +406,11 @@ def deleteTask():
 
             if not task_id:
                 state = "eNoID"
-                return f"""$0${state}"""
+                return generateUpdates(f"0${state}")
 
         except ValueError:
             state = "eVerror"
-            return f"""$0${state}"""
+            return generateUpdates(f"0${state}")
 
         db = get_db()
         try:
@@ -432,11 +441,11 @@ def deleteTask():
             db.commit()
         except sqlite3.Error:
             state = "eDatabaseError"
-            return f"""$0${state}"""
-        return generateTasksUpdate(state)
+            return generateUpdates(f"0${state}")
+        return generateUpdates(state)
 
     else:
-        return generateTasksUpdate(state)
+        return generateUpdates(state)
 
 
 @app.route("/api/deleteaccount", methods=["GET"])

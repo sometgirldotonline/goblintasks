@@ -325,3 +325,38 @@ form input {
 .page:not(.active) {
     display: none;
 }
+
+dialog{
+    border: 0px;
+    background-color: var(--bgc);
+    padding: 0;
+    border-radius: 5px;
+    box-shadow: #010e0647 2px 2px 10px;
+    width: fit-content;
+    z-index: 11 ;
+    position: fixed;
+    top: 15%;
+    min-width: 30%;
+}
+dialog .title{
+    text-align: center;
+    width: 100%;
+}
+body:has(dialog[open])::before{
+    width: 100vw;
+    height: 100vh;
+    position:fixed;
+    top:0px;
+    left:0px;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: block;
+    content: ' ';
+    z-index: 10;
+}
+dialog > .card{
+    box-shadow: none;
+    margin: 0px;
+    z-index: 110;
+    position: relative;
+    width: calc(100% - 30px);
+}
