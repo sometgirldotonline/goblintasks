@@ -374,3 +374,7 @@ dialog:not(:has(.card)){
     font-style: italic;
     text-align: center;
 }
+
+button.fancyfancyfancy.danger{
+    background-color: rgb(255, 49, 49);
+}

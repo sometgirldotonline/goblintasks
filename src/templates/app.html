@@ -81,9 +81,23 @@
       </section>
     </section>
     <section class="page maincontent" pagename="settings">
+      <section class="privmgmt card"><span class="title">Analytics</span><br>
+        <p>
+    This application uses
+    <a href="https://plausible.io">Plausible Analytics (Community Edition - Self-hosted)</a>.<br>
+    Using this application does not require you to enable analytics.<br>
+    The analytics data is publicly visible here 
+    <a target="_blank" href="https://plausible.sometgirl.online/gt.sometgirl.online">here</a>.
+  </p>
+    <div class="buttonrow">
+  <button class="fancyfancyfancy" onclick="configureAnaylitics(true, () => {window.location.reload()})">Enable Analytics</button>
+  <button class="fancyfancyfancy" onclick="configureAnaylitics(false, () => {document.querySelector('#analyticsWindow').remove()} )">Disable Analytics</button></div>
+      </section>
       <section class="datamgmt card"><span class="title">Data Management</span><br>
-        <button onclick="deleteaccount()">Delete my account (and it's data)</button><br>
-        <button onclick="window.location.href = '/api/getUserData'">Download your data</button><br>
+        <p>manage ur data</p>
+        <div class="buttonrow">
+        <button class="fancyfancyfancy danger" onclick="deleteaccount()">Delete my account (and it's data)</button>
+        <button class="fancyfancyfancy" onclick="window.location.href = '/api/getUserData'">Download your data</button></div>
       </section>
     </section>
   </main>
