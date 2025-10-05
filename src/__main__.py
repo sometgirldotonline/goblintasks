@@ -217,11 +217,17 @@ def index():
     res = cur.fetchone()
     username = session["github_login"]
     cur = db.execute("SELECT * FROM tasks")
+    if "analNoticeSeen" not in session:
+        session["analNoticeSeen"] = False
+    if "enableAnal" not in session:
+        session["enableAnal"] = False
     return render_template(
         "app.html",
         username=username,
         usercoins=res["total_value"] + usercoins,
         tasks=cur.fetchall(),
+        showAnayliticsNotice=not session["analNoticeSeen"],
+        enableAnal=session["enableAnal"],
     )
 
 
@@ -608,6 +614,18 @@ def getUserData():
         return f"Download failed: {str(e)}", 500
 
 
+@app.route("/api/configureAnaylitics", methods=["POST"])
+def configureAnaylitics():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    if not session["analNoticeSeen"]:
+        session["analNoticeSeen"] = True
+    if request.data == b'true':
+        session["enableAnal"] = True
+        return generateUpdates("1$enabled")
+    elif request.data == b'false':
+        session["enableAnal"] = False
+        return generateUpdates("1$disabled")
 
 if __name__ == "__main__":
     app.run(port=os.getenv("port"), ssl_context=("cert.pem", "key.pem"))

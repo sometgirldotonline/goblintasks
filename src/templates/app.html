@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Goblintasks</title>
   <link rel="stylesheet" href="static/style.css">
+  {% if enableAnal %}
+    <script defer data-domain="gt.sometgirl.online" src="https://plausible.sometgirl.online/js/script.js"></script>
+  {% endif %}
+
 </head>
 
 <body>
@@ -21,6 +25,21 @@
           <input type="submit" value="Submit">
         </form>
 </dialog>
+{% if showAnayliticsNotice %}
+<dialog open id="analyticsWindow">
+  <span class="title">Analytics Notice</span>
+  <p>
+    This application uses
+    <a href="https://plausible.io">Plausible Analytics (Community Edition - Self-hosted)</a>.<br>
+    Using this application does not require you to enable analytics.<br>
+    The analytics data is publicly visible here 
+    <a target="_blank" href="https://plausible.sometgirl.online/gt.sometgirl.online">here</a>.
+  </p>
+  <div class="buttonrow">
+  <button class="fancyfancyfancy" onclick="configureAnaylitics(true, () => {window.location.reload()})">Enable Analytics</button>
+  <button class="fancyfancyfancy" onclick="configureAnaylitics(false, () => {document.querySelector('#analyticsWindow').remove()} )">Disable Analytics</button></div>
+</dialog>
+{% endif %}
   <main class="app">
     <section class="sidebar">
       <button class="navhome active" pagename="home" onclick="pageturn('home')">Home</button>
@@ -29,6 +48,9 @@
       <button class="navabout">About</button>
       <button class="contrib"
         onclick="window.open('https://github.com/sometgirldotonline/goblintasks')">Contribute</button>
+           <footer>
+      <a target="_blank" href="https://plausible.sometgirl.online/gt.sometgirl.online">View analytics</a>
+    </footer>
     </section>
     <nav class="navbar"><span class="lhs"><input type="checkbox" id="navtoggle" checked style="display: none;"><label
           class="navtogglebtn" for="navtoggle"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"

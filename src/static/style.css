@@ -289,7 +289,7 @@ section.maincontent {
     margin-right: 10px;
 }
 
-input[type=submit] {
+input[type=submit], .fancyfancyfancy{
     all: unset;
     background-color: var(--accent);
     color: var(--bgc);
@@ -301,6 +301,10 @@ input[type=submit] {
     margin-top: 5px;
     width: calc(100% - 15px);
     text-align: center;
+}
+.buttonrow{
+    display: flex;
+    gap: 5px;
 }
 
 form label {
@@ -363,4 +367,10 @@ dialog > .card{
 dialog:not(:has(.card)){
     padding: 15px;
 
+}
+.sidebar footer, .sidebar footer *{
+    font-size: 0.8em;
+    color:rgba(0, 0, 0, 0.8) !important;
+    font-style: italic;
+    text-align: center;
 }

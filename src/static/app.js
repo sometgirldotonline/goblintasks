@@ -146,3 +146,21 @@ Are you sure you want to delete your account?
         window.location.href = "/api/deleteaccount"
     }
 }
+
+
+async function configureAnaylitics(state, success){
+    try {
+        var res = await fetch("/api/configureAnaylitics", {
+            method: "POST",
+            body: `${state}`
+        })
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    }
+    catch (e){
+        alert(`Error occured: 
+${e.message}.
+Retry your action or check the developer console for more.`)
+return;
+    }
+    success()
+}
