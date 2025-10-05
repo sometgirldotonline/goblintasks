@@ -148,11 +148,14 @@ Are you sure you want to delete your account?
 }
 
 
-async function configureAnaylitics(state, success){
+async function configureAnaylitics(state, success, fromSettings = false){
     try {
         var res = await fetch("/api/configureAnaylitics", {
             method: "POST",
-            body: `${state}`
+            body: new URLSearchParams({
+                state: state,
+                modifiedInSettings: fromSettings
+            })
         })
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
     }

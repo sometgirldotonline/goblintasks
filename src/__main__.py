@@ -221,6 +221,11 @@ def index():
         session["analNoticeSeen"] = False
     if "enableAnal" not in session:
         session["enableAnal"] = False
+    dnt = request.headers.get("DNT") == "1"
+    gpc = request.headers.get("Sec-GPC") == "1"
+    if dnt or (gpc and "modifiedInSettings" not in session):
+        session["enableAnal"] = False
+        session["analNoticeSeen"] = True
     return render_template(
         "app.html",
         username=username,
@@ -618,12 +623,17 @@ def getUserData():
 def configureAnaylitics():
     if not github.authorized:
         return redirect(url_for("github.login"))
+    print(request.form["state"])
     if not session["analNoticeSeen"]:
         session["analNoticeSeen"] = True
-    if request.data == b'true':
+    if request.form["modifiedInSettings"] == "true":
+        session["modifiedInSettings"] = True
+    if request.form["state"] == "true":
+        print("enabling anal")
         session["enableAnal"] = True
         return generateUpdates("1$enabled")
-    elif request.data == b'false':
+    elif request.form["state"] == "false":
+        print("disabling anal")
         session["enableAnal"] = False
         return generateUpdates("1$disabled")
 
