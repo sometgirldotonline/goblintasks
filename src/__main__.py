@@ -638,4 +638,7 @@ def configureAnaylitics():
         return generateUpdates("1$disabled")
 
 if __name__ == "__main__":
-    app.run(port=os.getenv("port"), ssl_context=("cert.pem", "key.pem"))
+    if os.getenv("PROTOCOL") == "HTTPS": 
+        app.run(port=os.getenv("port"), ssl_context=("cert.pem", "key.pem"))
+    elif os.getenv("PROTOCOL") == "HTTP": 
+        app.run(port=os.getenv("port"))
