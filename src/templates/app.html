@@ -14,16 +14,7 @@
 
 <body >
   <dialog>
-    <section class="card"><span class="title">Edit Task</span>
-      <form class="editTaskForm">
-        <label for="taskName">Task Name</label>
-        <input type="text" name="taskName" id="taskName" required="true">
-        <label for="taskValue">Task Value</label>
-        <input type="number" name="taskValue" id="taskValue" min=0 required="true" value=0>
-        <label for="dueBy">Due By <small><i>Optional!</i></small></label>
-        <input type="date" name="dueBy" id="dueBy">
-        <input type="submit" value="Submit">
-      </form>
+    
   </dialog>
   {% if showAnayliticsNotice %}
   <dialog open id="analyticsWindow">
@@ -49,7 +40,7 @@
       <button class="navhome active" pagename="home" onclick="pageturn('home')">Home</button>
       <button class="navsettings" pagename="transactions" onclick="pageturn('transactions')">Transactions</button>
       <button class="navsettings" pagename="settings" onclick="pageturn('settings')">Settings</button>
-      <button class="navabout">About</button>
+      <button class="navabout" onclick="aboutDialog()">About</button>
       <button class="contrib"
         onclick="window.open('https://github.com/sometgirldotonline/goblintasks')">Contribute</button>
       <footer>

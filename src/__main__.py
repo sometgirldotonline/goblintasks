@@ -1,3 +1,4 @@
+APPVERSION = "0.3.6"
 # Debug logging was added by Github Copilot
 from flask import (
     Flask,
@@ -20,16 +21,16 @@ import datetime, time
 import secrets
 import hashlib
 import hmac
+import psutil
 from dotenv import load_dotenv
 from flask_dance.contrib.github import make_github_blueprint, github
 import requests
 from requests.auth import HTTPBasicAuth
-
+startupTimeStamp = time.time()
 load_dotenv()
 app = Flask(__name__)
-
+from collections import deque
 # ensure datadir exists
-
 if not os.path.exists(
     os.path.join(os.path.dirname(os.path.realpath(__file__)), os.getenv("dataDir"))
 ):
@@ -45,6 +46,20 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 app.config.from_mapping({"DEBUG": True})
+# thing for reqs per sec calc
+rpsTimestamps = deque(maxlen=1000)
+
+
+@app.before_request
+def track_request():
+    rpsTimestamps.append(time.time())
+
+def requests_per_second():
+    now = time.time()
+    # only count requests in the last second
+    recent = [t for t in rpsTimestamps if now - t <= 1]
+    return len(recent)
+
 # done by chatGPT
 def revoke_github_token(user_token):
     client_id = os.getenv("githubClientID")
@@ -473,7 +488,19 @@ def editTask():
             }],updateTasks=False)
     else:
         return generateUpdates(f"0$noTaskID")
-
+@app.route("/api/aboutDialog", methods=["POST"])
+def aboutme():
+        return generateUpdates("1$success", updates=[{
+            "action": "innerHTML",
+            "selector": "dialog",
+            "value":f"""<section class="card"><span class="title">About</span>
+<p>Version: {APPVERSION}</p>
+<form method="dialog"><button type="submit">Close</button></form>"""
+        },{
+                "action": "setAttribute",
+                "selector": "dialog",
+                "value":{"name":"open", "value":"open"}
+            }],updateTasks=False)
 @app.route("/api/editTask", methods=["POST"])
 def etphonehome():
     state = "1$it probably worked idk"
@@ -772,8 +799,30 @@ def configureAnaylitics():
         session["enableAnal"] = False
         return generateUpdates("1$disabled")
 
+@app.route("/api/health", methods=["GET"])
+def healthAPI():
+    ghApiStat = "unknown"
+    try:
+        r = requests.get("https://api.github.com", timeout=5)
+        if r.status_code == 200:
+            ghApiStat = "OK200"
+        else:
+            ghApiStat = f"CODE{r.status_code}"
+    except requests.RequestException:
+        ghApiStat = "unreachable"
+    duTotal, duUsed, duFree = shutil.disk_usage("/")
+    return {
+        "uptime": time.time() - startupTimeStamp,
+        "duPcent": (duUsed / duTotal) * 100,
+        "githubAPI": ghApiStat,
+        "cpuUsage": psutil.cpu_percent(interval=1),
+        "appCPUusage": psutil.Process().cpu_percent(interval=1),
+        "reqPerSec": format(requests_per_second(), ".2f")
+    }   
+
 if __name__ == "__main__":
     if os.getenv("PROTOCOL") == "HTTPS": 
         app.run(port=os.getenv("port"), ssl_context=("cert.pem", "key.pem"))
     elif os.getenv("PROTOCOL") == "HTTP": 
         app.run(port=os.getenv("port"))
+    

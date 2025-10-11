@@ -52,6 +52,25 @@ async function editTask(id) {
 }
 
 
+async function aboutDialog() {
+    try {
+        const resp = await fetch(`/api/aboutDialog`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+        });
+        if (!resp.ok) {
+            throw new Error(`Server Sent Error: ${resp.status}`)
+        }
+        processUpdate(await resp.json())
+    }
+    catch (error) {
+        alert(error)
+        console.error(error)
+    }
+}
+
 
 async function saveTheme(theme) {
     try {
