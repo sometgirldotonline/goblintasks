@@ -1,0 +1,43 @@
+<section class="datamgmt card"><span class="title">Interface</span><br>
+    <label for="uiTheme">Theme:</label>
+    <select id="uiTheme" name="uiTheme">
+        {% set themes = [
+        {'value': 'default', 'label': 'Default', 'disabled': False},
+        {'value': 'magic', 'label': 'Magic 🪄', 'disabled': False},
+        {'value': 'dark', 'label': 'Normal dark mode (soon tm)', 'disabled': True}
+        ] %}
+
+        {% for item in themes %}
+        <option value="{{ item.value }}" {% if theme==item.value %}selected{% endif %} {% if item.disabled %}disabled{%
+            endif %}>
+            {{ item.label }}
+        </option>
+        {% endfor %}
+    </select>
+    <button class="fancyfancyfancy" onclick="saveTheme(document.querySelector('#uiTheme').value)">Save
+        Theme</button>
+</section>
+<section class="privmgmt card"><span class="title">Analytics</span><br>
+    <p>
+        This application uses
+        <a href="https://plausible.io">Plausible Analytics (Community Edition - Self-hosted)</a>.<br>
+        Using this application does not require you to enable analytics.<br>
+        The analytics data is publicly visible here
+        <a target="_blank" href="https://plausible.sometgirl.online/gt.sometgirl.online">here</a>.
+    </p>
+    <div class="buttonrow">
+        <button class="fancyfancyfancy" onclick="configureAnaylitics(true, () => {window.location.reload()})">Enable
+            Analytics</button>
+        <button class="fancyfancyfancy"
+            onclick="configureAnaylitics(false, () => {document.querySelector('#analyticsWindow').remove()} )">Disable
+            Analytics</button>
+    </div>
+</section>
+<section class="datamgmt card"><span class="title">Data Management</span><br>
+    <p>manage ur data</p>
+    <div class="buttonrow">
+        <button class="fancyfancyfancy danger" onclick="deleteaccount()">Delete my account (and its data)</button>
+        <button class="fancyfancyfancy" onclick="window.location.href = '/api/getUserData'">Download your
+            data</button>
+    </div>
+</section>

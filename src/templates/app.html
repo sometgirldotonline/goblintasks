@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="{{theme}}">
 
 <head>
   <meta charset="UTF-8">
@@ -7,39 +7,43 @@
   <title>Goblintasks</title>
   <link rel="stylesheet" href="static/style.css">
   {% if enableAnal %}
-    <script defer data-domain="gt.sometgirl.online" src="https://plausible.sometgirl.online/js/script.js"></script>
+  <script defer data-domain="gt.sometgirl.online" src="https://plausible.sometgirl.online/js/script.js"></script>
   {% endif %}
 
 </head>
 
-<body>
+<body >
   <dialog>
-  <section class="card"><span class="title">Edit Task</span>
-        <form class="editTaskForm">
-          <label for="taskName">Task Name</label>
-          <input type="text" name="taskName" id="taskName" required="true">
-          <label for="taskValue">Task Value</label>
-          <input type="number" name="taskValue" id="taskValue" min=0 required="true" value=0>
-          <label for="dueBy">Due By <small><i>Optional!</i></small></label>
-          <input type="date" name="dueBy" id="dueBy">
-          <input type="submit" value="Submit">
-        </form>
-</dialog>
-{% if showAnayliticsNotice %}
-<dialog open id="analyticsWindow">
-  <span class="title">Analytics Notice</span>
-  <p>
-    This application uses
-    <a href="https://plausible.io">Plausible Analytics (Community Edition - Self-hosted)</a>.<br>
-    Using this application does not require you to enable analytics.<br>
-    The analytics data is publicly visible here 
-    <a target="_blank" href="https://plausible.sometgirl.online/gt.sometgirl.online">here</a>.
-  </p>
-  <div class="buttonrow">
-  <button class="fancyfancyfancy" onclick="configureAnaylitics(true, () => {window.location.reload()})">Enable Analytics</button>
-  <button class="fancyfancyfancy" onclick="configureAnaylitics(false, () => {document.querySelector('#analyticsWindow').remove()} )">Disable Analytics</button></div>
-</dialog>
-{% endif %}
+    <section class="card"><span class="title">Edit Task</span>
+      <form class="editTaskForm">
+        <label for="taskName">Task Name</label>
+        <input type="text" name="taskName" id="taskName" required="true">
+        <label for="taskValue">Task Value</label>
+        <input type="number" name="taskValue" id="taskValue" min=0 required="true" value=0>
+        <label for="dueBy">Due By <small><i>Optional!</i></small></label>
+        <input type="date" name="dueBy" id="dueBy">
+        <input type="submit" value="Submit">
+      </form>
+  </dialog>
+  {% if showAnayliticsNotice %}
+  <dialog open id="analyticsWindow">
+    <span class="title">Analytics Notice</span>
+    <p>
+      This application uses
+      <a href="https://plausible.io">Plausible Analytics (Community Edition - Self-hosted)</a>.<br>
+      Using this application does not require you to enable analytics.<br>
+      The analytics data is publicly visible here
+      <a target="_blank" href="https://plausible.sometgirl.online/gt.sometgirl.online">here</a>.
+    </p>
+    <div class="buttonrow">
+      <button class="fancyfancyfancy" onclick="configureAnaylitics(true, () => {window.location.reload()})">Enable
+        Analytics</button>
+      <button class="fancyfancyfancy"
+        onclick="configureAnaylitics(false, () => {document.querySelector('#analyticsWindow').remove()} )">Disable
+        Analytics</button>
+    </div>
+  </dialog>
+  {% endif %}
   <main class="app">
     <section class="sidebar">
       <button class="navhome active" pagename="home" onclick="pageturn('home')">Home</button>
@@ -48,9 +52,9 @@
       <button class="navabout">About</button>
       <button class="contrib"
         onclick="window.open('https://github.com/sometgirldotonline/goblintasks')">Contribute</button>
-           <footer>
-      <a target="_blank" href="https://plausible.sometgirl.online/gt.sometgirl.online">View analytics</a>
-    </footer>
+      <footer>
+        <a target="_blank" href="https://plausible.sometgirl.online/gt.sometgirl.online">View analytics</a>
+      </footer>
     </section>
     <nav class="navbar"><span class="lhs"><input type="checkbox" id="navtoggle" checked style="display: none;"><label
           class="navtogglebtn" for="navtoggle"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"
@@ -62,43 +66,8 @@
           onclick="if(confirm('Are you sure you wish to log-out?')){window.location.href='/logout'}">👤<span
             class="username">{{username}}</span></button></span>
     </nav>
-    <section class="page maincontent active" pagename="home">
-      <section class="tasksSect card"><span class="title">Tasks</span>
-        <ul class="tasksList">
-          {% include 'tasksCard.html' %}
-        </ul>
-      </section>
-      <section class="addTaskSect card"><span class="title">Add Task</span>
-        <form class="addTaskForm">
-          <label for="taskName">Task Name</label>
-          <input type="text" name="taskName" id="taskName" required="true">
-          <label for="taskValue">Task Value</label>
-          <input type="number" name="taskValue" id="taskValue" min=0 required="true" value=0>
-          <label for="dueBy">Due By <small><i>Optional!</i></small></label>
-          <input type="date" name="dueBy" id="dueBy">
-          <input type="submit" value="Submit">
-        </form>
-      </section>
-    </section>
-    <section class="page maincontent" pagename="settings">
-      <section class="privmgmt card"><span class="title">Analytics</span><br>
-        <p>
-    This application uses
-    <a href="https://plausible.io">Plausible Analytics (Community Edition - Self-hosted)</a>.<br>
-    Using this application does not require you to enable analytics.<br>
-    The analytics data is publicly visible here 
-    <a target="_blank" href="https://plausible.sometgirl.online/gt.sometgirl.online">here</a>.
-  </p>
-    <div class="buttonrow">
-  <button class="fancyfancyfancy" onclick="configureAnaylitics(true, () => {window.location.reload()})">Enable Analytics</button>
-  <button class="fancyfancyfancy" onclick="configureAnaylitics(false, () => {document.querySelector('#analyticsWindow').remove()} )">Disable Analytics</button></div>
-      </section>
-      <section class="datamgmt card"><span class="title">Data Management</span><br>
-        <p>manage ur data</p>
-        <div class="buttonrow">
-        <button class="fancyfancyfancy danger" onclick="deleteaccount()">Delete my account (and it's data)</button>
-        <button class="fancyfancyfancy" onclick="window.location.href = '/api/getUserData'">Download your data</button></div>
-      </section>
+    <section class="page maincontent active">
+        {% include 'homePage.html' %}
     </section>
   </main>
   <script src="static/app.js"></script>

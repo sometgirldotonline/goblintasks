@@ -161,28 +161,30 @@ def timestamp_to_time(value, thing):
 app.register_blueprint(blueprint, url_prefix="/login")
 
 
-def generateUpdates(state):
+def generateUpdates(state,updateTasks=True, updates=[]):
     db = get_db()
     cur = db.execute(
         "SELECT COALESCE(SUM(transactionCost), 0) AS total_value FROM transactions;"
     )
     totalValue = cur.fetchone()['total_value']
-    cur = db.execute("SELECT * FROM tasks")
-    res = cur.fetchall()
+    if updateTasks:
+        cur = db.execute("SELECT * FROM tasks")
+        res = cur.fetchall()
     data = {
         "state": state,
         "pageUpdates": [
             {"action": "innerText",
              "selector": "#coinsBalanceValue",
-             "value": totalValue},
-            {
+             "value": totalValue}
+        ]
+    }
+    data["pageUpdates"]+=updates
+    if updateTasks:
+        data["pageUpdates"]+=[            {
                 "action": "innerHTML",
                 "selector": "ul.tasksList",
                 "value":render_template("tasksCard.html", tasks=res)
-            },
-            {"action":  "serverSentModal"}
-        ]
-    }
+            }]
     return data
 
 
@@ -226,6 +228,9 @@ def index():
     if dnt or (gpc and "modifiedInSettings" not in session):
         session["enableAnal"] = False
         session["analNoticeSeen"] = True
+    theme = ""
+    if "theme" in session:
+        theme = session["theme"]
     return render_template(
         "app.html",
         username=username,
@@ -233,6 +238,7 @@ def index():
         tasks=cur.fetchall(),
         showAnayliticsNotice=not session["analNoticeSeen"],
         enableAnal=session["enableAnal"],
+        theme=theme
     )
 
 
@@ -329,6 +335,48 @@ def uts():
         return generateUpdates(state)
     else:
         return generateUpdates(f"0${state}")
+
+@app.route("/api/getPage", methods=["POST"])
+def getPage():
+    if "page" in request.form:
+        if request.form["page"] == "settings":
+            return generateUpdates("1$success", updates=[{
+                "action": "innerHTML",
+                "selector": "section.maincontent",
+                "value":render_template("settingsPage.html", theme=session["theme"])
+            }],updateTasks=False)
+        elif request.form["page"] == "home":
+            db = get_db()
+            cur = db.execute("SELECT * FROM tasks")
+            return generateUpdates("1$success", updates=[{
+                "action": "innerHTML",
+                "selector": "section.maincontent",
+                "value":render_template("homePage.html",tasks=cur.fetchall())
+            }],updateTasks=False)
+        elif request.form["page"] == "transactions":
+            db = get_db()
+            cur = db.execute("SELECT * FROM transactions")
+            return generateUpdates("1$success", updates=[{
+                "action": "innerHTML",
+                "selector": "section.maincontent",
+                "value":render_template("transPage.html",transactions=cur.fetchall())
+            }],updateTasks=False)
+    else:
+        return generateUpdates(f"0$noPageID")
+
+
+@app.route("/api/setTheme", methods=["POST"])
+def setTheme():
+    if "theme" in request.form:
+            session["theme"] = request.form["theme"]
+            return generateUpdates("1$success", updates=[{
+                "action": "setAttribute",
+                "selector": "html",
+                "value":{"name":"class", "value":request.form["theme"]}
+            }],updateTasks=False)
+    else:
+        return generateUpdates(f"0$noThemeName")
+
 
 
 @app.route("/api/addTask", methods=["POST"])

@@ -8,6 +8,20 @@
     --cardbg: hsl(142, 93%, 50%, 5%);
     --outline: rgba(0, 0, 0, 0.1);
 }
+
+html.magic *{
+    --bgc: linear-gradient(0deg, #11002a, #6420a8);
+    --fgc: #f6e1ff;
+    --primary: #f6bafb;
+    --secondary: #9729fc;
+    --accent: #e26cd7;
+    --navheight: 35px;
+    --cardbg: #6420a834;
+    --outline: #f6e1ff4c;
+}
+.html.magic .card{
+    backdrop-filter: blur(10px);
+}
 /* dark mode is really ugly so we ignore it for now */
 /* 
 @media (prefers-color-scheme: dark) {
@@ -22,13 +36,16 @@
         --navheight: 35px;
     }
 } */
-
+a{
+    color: var(--fgc)
+}
 body {
     margin: 0px;
-    background-color: var(--bgc);
+    background: var(--bgc);
     font-family: sans-serif;
     color: var(--fgc);
     overflow: hidden;
+    min-height:100vh;
 }
 
 section.sidebar {
@@ -46,7 +63,7 @@ section.sidebar {
     left: 0px;
     top: 35px;
     border-right: 1px solid var(--outline);
-    background-color: var(--bgc);
+    background: var(--bgc);
     padding: 10px;
 }
 
@@ -60,7 +77,7 @@ nav.navbar {
     z-index: 1;
     padding: 6px;
     border-bottom: 1px solid var(--outline);
-    background-color: var(--bgc);
+    background: transparent;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -103,7 +120,7 @@ main:has(input#navtoggle:checked) section.maincontent {
 }
 
 section.card {
-    background-color: var(--cardbg);
+    background: var(--cardbg);
     padding: 15px;
     border-radius: 5px;
     box-shadow: #010e0647 2px 2px 10px;
@@ -200,7 +217,7 @@ nav .rhs>* {
     border-radius: 5px;
     border: 1px solid var(--outline);
     padding: 5px;
-    background-color: transparent;
+    background: transparent;
     font-size: 0.6em;
     display: block;
     vertical-align: middle;
@@ -217,7 +234,7 @@ section.sidebar {
 }
 
 section.sidebar button.active {
-    background-color: var(--cardbg);
+    background: var(--cardbg);
 
 }
 
@@ -225,7 +242,7 @@ section.sidebar button {
     all: unset;
     border-radius: 5px;
     border: 1px solid var(--outline);
-    background-color: transparent;
+    background: transparent;
     display: block;
     font-size: 0.8em;
     width: calc(100% - 25px);
@@ -291,7 +308,7 @@ section.maincontent {
 
 input[type=submit], .fancyfancyfancy{
     all: unset;
-    background-color: var(--accent);
+    background: var(--accent);
     color: var(--bgc);
     padding: 8px;
     border-radius: 5px;
@@ -314,7 +331,7 @@ form label {
 
 form input {
     all: unset;
-    background-color: var(--secondary);
+    background: var(--secondary);
     padding: 5px;
     border-radius: 5px;
     width: calc(100% - 10px);
@@ -332,7 +349,7 @@ form input {
 
 dialog{
     border: 0px;
-    background-color: var(--bgc);
+    background: var(--bgc);
     padding: 0;
     border-radius: 5px;
     box-shadow: #010e0647 2px 2px 10px;
@@ -352,7 +369,7 @@ body:has(dialog[open])::before{
     position:fixed;
     top:0px;
     left:0px;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5);
     display: block;
     content: ' ';
     z-index: 10;
@@ -370,11 +387,45 @@ dialog:not(:has(.card)){
 }
 .sidebar footer, .sidebar footer *{
     font-size: 0.8em;
-    color:rgba(0, 0, 0, 0.8) !important;
+    color:var(--fgc) !important;
     font-style: italic;
     text-align: center;
 }
 
 button.fancyfancyfancy.danger{
-    background-color: rgb(255, 49, 49);
+    background: rgb(255, 49, 49);
 }
+path {
+    stroke: var(--fgc)
+}
+    @keyframes explode {
+      0% {
+        transform: scale(0) translate(0, 0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) translate(calc(var(--x) * 1px), calc(var(--y) * 1px)) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    .item {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      pointer-events: none;
+      animation: explode 2s ease-out forwards;
+    }
+    table, thead, tbody, tr, td{
+        min-width: fit-content;
+        border-collapse: collapse;
+    }
+    thead{
+        background: var(--secondary);
+    }
+    thead td{
+        padding: 5px;
+    }
+    tr:nth-of-type(2n){
+        background: var(--cardbg);
+    }

@@ -1,0 +1,16 @@
+<section class="tasksSect card"><span class="title">Tasks</span>
+    <ul class="tasksList">
+        {% include 'tasksCard.html' %}
+    </ul>
+</section>
+<section class="addTaskSect card"><span class="title">Add Task</span>
+    <form class="addTaskForm">
+        <label for="taskName">Task Name</label>
+        <input type="text" name="taskName" id="taskName" required="true">
+        <label for="taskValue">Task Value</label>
+        <input type="number" name="taskValue" id="taskValue" min=0 required="true" value=0>
+        <label for="dueBy">Due By <small><i>Optional!</i></small></label>
+        <input type="date" name="dueBy" id="dueBy">
+        <input type="submit" value="Submit">
+    </form>
+</section>
