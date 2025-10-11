@@ -1,0 +1,17 @@
+<section class="transSect card"><span class="title">Transactions</span>
+    <table>
+        <thead><tr><td>ID</td><td>Name</td><td>Type</td><td>Value</td><td>TimeDate</td></tr></thead>
+    <tbody class="transList">
+        {% for row in transactions %}
+        <tr class="task" id="task-{{ row.transid }}">
+                <td class="cell">{{ row.transid }}</td>
+                <td class="cell">{{ row.transactionName }}</td>
+                <td class="cell">{{ {0: "Bonus Coins", 1: "Store Purchase", 2: "Task Completed"}.get(row.transactionType, "Other") }}</td>
+                <td class="cell">{{ row.transactionCost }}</td>
+                <td class="cell">{{ row.transactionStamp  |
+                    timestamp_to_time('%Y-%m-%d') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</section>
