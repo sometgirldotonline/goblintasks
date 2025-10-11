@@ -15,3 +15,6 @@ Not to mention, to develop for iOS I need a Mac and iPhone, neither of which I o
 Please, just use a free-er platform
 
 (A suggestion to safari users; Switch to Orion browser, it's basically Safari on steroids, and it supports Chrome and Firefox extensions ;) )
+
+
+Magic Theme Colour Pallete: https://lospec.com/palette-list/teaviie
