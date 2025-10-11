@@ -1,0 +1,11 @@
+<section class="card"><span class="title">Edit Task</span>
+  <form class="editTaskForm" onsubmit="edTask(event)" method="dialog">
+    <label for="taskName">Task Name</label>
+    <input type="text" name="taskName" id="taskName" required="true" value="{{ task.taskName }}">
+    <label for="taskValue">Task Value</label>
+    <input type="number" name="taskValue" id="taskValue" min=0 required="true" value="{{ task.taskValue }}">
+    <label for="dueBy">Due By <small><i>Optional!</i></small></label>
+    <input type="date" name="dueBy" id="dueBy" value="{{ task.dueBy }}">
+    <input type="hidden" hidden name="id" id="id" value="{{ task.taskID }}">
+    <input type="submit" value="Submit">
+  </form>

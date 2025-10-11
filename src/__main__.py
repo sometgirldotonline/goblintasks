@@ -394,9 +394,11 @@ def addTask():
         # Validate and convert inputs
         try:
             task_value = int(request.form["taskValue"])
-            due_by = (
-                -1 if request.form["dueBy"] == "NaN" else int(request.form["dueBy"])
-            )
+            due_raw = request.form["dueBy"].strip()
+            if due_raw == "" or due_raw.lower() == "nan":
+                due_by = -1
+            else:
+                due_by = int(due_raw)
             task_name = request.form["taskName"].strip()
 
             if not task_name:
@@ -447,6 +449,91 @@ INSERT INTO tasks (
             return generateUpdates(f"0${state}")
 
         return generateUpdates(state)
+
+    else:
+        return generateUpdates(state)
+
+@app.route("/api/editTaskDialog", methods=["POST"])
+def editTask():
+    if "id" in request.form:
+        db = get_db();
+        cur = db.execute("SELECT * FROM tasks WHERE taskID = ?",
+                (
+                    int(request.form["id"]),
+                ),
+            )
+        return generateUpdates("1$success", updates=[{
+            "action": "innerHTML",
+            "selector": "dialog",
+            "value":render_template("editTaskCard.html", task=cur.fetchone())
+        },{
+                "action": "setAttribute",
+                "selector": "dialog",
+                "value":{"name":"open", "value":"open"}
+            }],updateTasks=False)
+    else:
+        return generateUpdates(f"0$noTaskID")
+
+@app.route("/api/editTask", methods=["POST"])
+def etphonehome():
+    state = "1$it probably worked idk"
+    if (
+        "id" in request.form and
+        "dueBy" in request.form
+        and "taskValue" in request.form
+        and "taskName" in request.form
+    ):
+        if not github.authorized:
+            return redirect(url_for("github.login"))
+
+        # Validate and convert inputs
+        try:
+            task_value = int(request.form["taskValue"])
+            due_raw = request.form["dueBy"].strip()
+            if due_raw == "" or due_raw.lower() == "nan":
+                due_by = -1
+            else:
+                due_by = int(due_raw)
+            task_name = request.form["taskName"].strip()
+
+            if not task_name:
+                state = "eEmptyTaskName"
+                return generateUpdates(f"0${state}")
+
+        except ValueError:
+            state = "eInvalidNumber"
+            return generateUpdates(f"0${state}")
+
+        db = get_db()
+        try:
+            cur = db.execute(
+                """
+            UPDATE tasks
+            SET taskName = ?, taskValue = ?, dueBy = ?
+            WHERE ownerID = ? AND taskID = ?;
+            """,
+                (
+                    task_name,
+                    task_value,
+                    due_by,
+                    session["github_id"],
+                    int(request.form["id"]),
+                ),
+            )
+            db.commit()
+        except sqlite3.Error:
+            state = "eDatabaseError"
+            return generateUpdates(f"0${state}")
+
+        return generateUpdates(state, updates=[{
+            "action": "innerHTML",
+            "selector": "dialog",
+            "value":""
+        },{
+                "action": "setAttribute",
+                "selector": "dialog",
+                "value":{"name":"open", "value":"pleaseRemoveThisAttrDaddyUWU"}
+            }])
 
     else:
         return generateUpdates(state)

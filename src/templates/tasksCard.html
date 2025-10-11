@@ -11,7 +11,7 @@
                     timestamp_to_time('%Y-%m-%d') ) }}</span>
             </span>
         </span>
-        <button class="editTask rhs">✏️</button>
+        <button class="editTask rhs" onclick="editTask({{ row.taskID }})">✏️</button>
         <button class="removeTask rhs" onclick="deleteTask({{ row.taskID }})">🗑️</button>
     </label>
 </li>

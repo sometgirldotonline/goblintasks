@@ -28,6 +28,31 @@ async function updateTaskState(id, state) {
 }
 
 
+async function editTask(id) {
+    console.log(`Editing task ID: ${id}`)
+    try {
+        const resp = await fetch(`/api/editTaskDialog`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+                id: id
+            })
+        });
+        if (!resp.ok) {
+            throw new Error(`Server Sent Error: ${resp.status}`)
+        }
+        processUpdate(await resp.json())
+    }
+    catch (error) {
+        alert(error)
+        console.error(error)
+    }
+}
+
+
+
 async function saveTheme(theme) {
     try {
         const resp = await fetch(`/api/setTheme`, {
@@ -63,7 +88,12 @@ function processUpdate(data) {
                 document.querySelector(update.selector).outerHTML = update.value;
                 break;
             case "setAttribute":
-                document.querySelector(update.selector).setAttribute(update.value.name, update.value.value);
+                if(update.value.value == "pleaseRemoveThisAttrDaddyUWU"){ // fuck me dude why am i like this :sob:
+                    document.querySelector(update.selector).removeAttribute(update.value.name)
+                }
+                else{
+                    document.querySelector(update.selector).setAttribute(update.value.name, update.value.value);
+                }
                 break;
             case "reload":
                 window.location.reload();
@@ -102,6 +132,29 @@ async function addTask(ev) {
             "body": new URLSearchParams({
                 taskName: ev.srcElement.taskName.value,
                 taskValue: ev.srcElement.taskValue.value,
+                dueBy: new Date(ev.srcElement.dueBy.value).getTime() / 1000,
+            }),
+            "method": "POST"
+        });
+        if (!atFetch.ok) {
+            throw new Error(`Server Sent Error: ${atFetch.status}`)
+        }
+        processUpdate(await atFetch.json())
+
+    }
+    catch (error) {
+        alert(error)
+        console.error(error)
+    }
+}
+
+async function edTask(ev) {
+    try {
+        const atFetch = await fetch("/api/editTask", {
+            "body": new URLSearchParams({
+                taskName: ev.srcElement.taskName.value,
+                taskValue: ev.srcElement.taskValue.value,
+                id: ev.srcElement.id.value,
                 dueBy: new Date(ev.srcElement.dueBy.value).getTime() / 1000,
             }),
             "method": "POST"
