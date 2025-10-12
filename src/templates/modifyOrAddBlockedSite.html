@@ -1,0 +1,9 @@
+<section class="card"><span class="title">Add/Modify Site</span>
+  <form class="editTaskForm" onsubmit="siteHandler.modAddSite('{{action}}', event)" method="dialog">
+    <label for="domain">Domain</label>
+    <input type="text" name="domain" id="domain" required="true" value="{{ site.domain }}">
+    <label for="unblockCost">Unblock Cost</label>
+    <input type="number" name="unblockCost" id="unblockCost" min=0 required="true" value="{{ site.unblockCost }}">
+    <input type="hidden" hidden name="id" id="id" value="{{ site.id }}">
+    <input type="submit" value="Submit">
+  </form>

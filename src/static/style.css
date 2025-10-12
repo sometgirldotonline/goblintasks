@@ -429,3 +429,65 @@ path {
     tr:nth-of-type(2n){
         background: var(--cardbg);
     }
+
+
+
+    
+        .itemReverse {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      pointer-events: none;
+      animation: explode 0.8s ease-out reverse;
+    }
+    ul.sitesList li {
+    list-style-type: none;
+    margin: 0px;
+    display: block;
+    margin-bottom: 10px;
+    user-select: none;
+
+}
+
+ul.sitesList>li {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+ul.sitesList li>span {
+    display: inline-block;
+}
+
+.siteDescription {
+    font-size: 0.7em;
+    margin-left: 2px;
+}
+
+.siteDescription,
+.siteDescription * {
+    display: inline;
+}
+
+ul.sitesList {
+    margin: 0px;
+    padding-inline-start: 0px;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+.siteworth {
+    font-weight: bold;
+}
+.site button {
+    background: none;
+    border: 0px;
+    outline: none;
+}
+
+
+dialog *{
+    color: var(--fgc)
+}

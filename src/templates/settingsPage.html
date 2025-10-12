@@ -1,3 +1,9 @@
+<section class="datamgmt card"><span class="title">Blocked Websites during Work Periods</span><br>
+    <ul class="sitesList">
+        {% include 'blockedSitesCard.html' %}
+    </ul>
+    <button class="fancyfancyfancy addsite" onclick="siteHandler.addSiteDialog()">Add Site</button>
+</section>
 <section class="datamgmt card"><span class="title">Interface</span><br>
     <label for="uiTheme">Theme:</label>
     <select id="uiTheme" name="uiTheme">
@@ -23,7 +29,7 @@
         <a href="https://plausible.io">Plausible Analytics (Community Edition - Self-hosted)</a>.<br>
         Using this application does not require you to enable analytics.<br>
         The analytics data is publicly visible here
-        <a target="_blank" href="https://plausible.sometgirl.online/gt.sometgirl.online">here</a>.
+        <a target="_blank" href="https://plausible.sometgirl.online/{{ host }}">here</a>.
     </p>
     <div class="buttonrow">
         <button class="fancyfancyfancy" onclick="configureAnaylitics(true, () => {window.location.reload()})">Enable

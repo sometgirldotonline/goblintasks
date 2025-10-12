@@ -1,0 +1,11 @@
+{% for row in sites %}
+<li class="site" id="site-{{ row.id }}">
+        <span style="width:100%; flex-grow: 1;"><span class="sitetitle">{{ row.domain }}</span><br>
+            <span class="siteDescription">
+                <i>Cost: </i><span class="siteworth v-currency">{{ row.unblockCost }}</span>
+            </span>
+        </span>
+        <button class="hs" onclick="siteHandler.editSiteDialog({{ row.id }})">✏️</button>
+        <button class="rhs" onclick="siteHandler.deleteSite({{ row.id }})">🗑️</button>
+</li>
+{% endfor %}

@@ -246,6 +246,8 @@ def index():
     theme = ""
     if "theme" in session:
         theme = session["theme"]
+    else:
+        session["theme"] = "default"
     return render_template(
         "app.html",
         username=username,
@@ -253,7 +255,8 @@ def index():
         tasks=cur.fetchall(),
         showAnayliticsNotice=not session["analNoticeSeen"],
         enableAnal=session["enableAnal"],
-        theme=theme
+        theme=theme,
+        host=os.getenv("APPHOST"),
     )
 
 
@@ -358,7 +361,7 @@ def getPage():
             return generateUpdates("1$success", updates=[{
                 "action": "innerHTML",
                 "selector": "section.maincontent",
-                "value":render_template("settingsPage.html", theme=session["theme"])
+                "value":render_template("settingsPage.html", theme=session["theme"], home=os.getenv("APPHOST"), sites=get_db().execute("SELECT * FROM blockedsites").fetchall())
             }],updateTasks=False)
         elif request.form["page"] == "home":
             db = get_db()
@@ -488,14 +491,50 @@ def editTask():
             }],updateTasks=False)
     else:
         return generateUpdates(f"0$noTaskID")
+
+
+@app.route("/api/addSiteDialog", methods=["POST"])
+def addSiteDialog():
+    return generateUpdates("1$success", updates=[{
+        "action": "innerHTML",
+        "selector": "dialog",
+        "value":render_template("modifyOrAddBlockedSite.html", site={"domain": "", "unblockCost": "30"},action="new")
+    },{
+            "action": "setAttribute",
+            "selector": "dialog",
+            "value":{"name":"open", "value":"open"}
+        }],updateTasks=False)
+
+@app.route("/api/editSiteDialog", methods=["POST"])
+def editSiteDialog():
+    if "id" in request.form:
+        db = get_db();
+        cur = db.execute("SELECT * FROM blockedsites WHERE id = ?",
+                (
+                    int(request.form["id"]),
+                ),
+            )
+        return generateUpdates("1$success", updates=[{
+            "action": "innerHTML",
+            "selector": "dialog",
+            "value":render_template("modifyOrAddBlockedSite.html", site=cur.fetchone(),action="modify")
+        },{
+                "action": "setAttribute",
+                "selector": "dialog",
+                "value":{"name":"open", "value":"open"}
+            }],updateTasks=False)
+    else:
+        return generateUpdates(f"0$noTaskID")
+
+
 @app.route("/api/aboutDialog", methods=["POST"])
-def aboutme():
+def abtdiag():
         return generateUpdates("1$success", updates=[{
             "action": "innerHTML",
             "selector": "dialog",
             "value":f"""<section class="card"><span class="title">About</span>
-<p>Version: {APPVERSION}</p>
-<form method="dialog"><button type="submit">Close</button></form>"""
+<p style="color:white">Version: {APPVERSION}</p>
+<form method="dialog"><button type="submit" class="fancyfancyfancy">Close</button></form>"""
         },{
                 "action": "setAttribute",
                 "selector": "dialog",
@@ -565,6 +604,121 @@ def etphonehome():
     else:
         return generateUpdates(state)
 
+@app.route("/api/editSite", methods=["POST"])
+def etdontphoneomepleasepleasepleaseplease():
+    state = "1$it probably worked idk"
+    if (
+        "id" in request.form and
+        "domain" in request.form
+        and "unblockCost" in request.form
+    ):
+        if not github.authorized:
+            return redirect(url_for("github.login"))
+
+        # Validate and convert inputs
+        try:
+            unblockCost = int(request.form["unblockCost"])
+            domain = request.form["domain"].strip()
+
+            if not domain:
+                state = "eEmptyDomainName"
+                return generateUpdates(f"0${state}", updateTasks=False)
+
+        except ValueError:
+            state = "eInvalidNumber"
+            return generateUpdates(f"0${state}", updateTasks=False)
+
+        db = get_db()
+        try:
+            cur = db.execute(
+                """
+            UPDATE blockedsites
+            SET domain = ?, unblockCost = ? WHERE id = ?;
+            """,
+                (
+                    domain,
+                    unblockCost,
+                    int(request.form["id"]),
+                ),
+            )
+            db.commit()
+        except sqlite3.Error:
+            state = "eDatabaseError"
+            return generateUpdates(f"0${state}", updateTasks=False)
+
+        return generateUpdates(state, updates=[{
+            "action": "innerHTML",
+            "selector": "dialog",
+            "value":""
+        },{
+                "action": "setAttribute",
+                "selector": "dialog",
+                "value":{"name":"open", "value":"pleaseRemoveThisAttrDaddyUWU"}
+            }, {
+                "action" : "innerHTML",
+                "selector": ".sitesList",
+                "value": render_template("blockedSitesCard.html", sites=get_db().execute("SELECT * FROM blockedsites").fetchall())
+            }], updateTasks=False)
+
+    else:
+        return generateUpdates(state)
+
+@app.route("/api/addSite", methods=["POST"])
+def addSite():
+    state = "1$it probably worked idk"
+    if (
+        "domain" in request.form
+        and "unblockCost" in request.form
+    ):
+        if not github.authorized:
+            return redirect(url_for("github.login"))
+
+        # Validate and convert inputs
+        try:
+            unblockCost = int(request.form["unblockCost"])
+            domain = request.form["domain"].strip()
+
+            if not domain:
+                state = "eEmptyDomainName"
+                return generateUpdates(f"0${state}", updateTasks=False)
+
+        except ValueError:
+            state = "eInvalidNumber"
+            return generateUpdates(f"0${state}", updateTasks=False)
+
+        db = get_db()
+        try:
+            cur = db.execute(
+                """
+            INSERT INTO blockedsites (domain, unblockCost) VALUES (?, ?);
+            """,
+                (
+                    domain,
+                    unblockCost,
+                ),
+            )
+            db.commit()
+        except sqlite3.Error:
+            state = "eDatabaseError"
+            return generateUpdates(f"0${state}", updateTasks=False)
+
+        return generateUpdates(state, updates=[{
+            "action": "innerHTML",
+            "selector": "dialog",
+            "value":""
+        },{
+                "action": "setAttribute",
+                "selector": "dialog",
+                "value":{"name":"open", "value":"pleaseRemoveThisAttrDaddyUWU"}
+            }, {
+                "action" : "innerHTML",
+                "selector": ".sitesList",
+                "value": render_template("blockedSitesCard.html", sites=get_db().execute("SELECT * FROM blockedsites").fetchall())
+            }], updateTasks=False)
+
+    else:
+        return generateUpdates(state)
+
 
 @app.route("/api/deleteTask", methods=["POST"])
 def deleteTask():
@@ -622,12 +776,49 @@ def deleteTask():
         return generateUpdates(state)
 
 
+@app.route("/api/removeSite", methods=["POST"])
+def removeSite():
+    state = "1$it probably worked idk"
+    if "id" in request.form:
+        if not github.authorized:
+            return redirect(url_for("github.login"))
+
+        # Validate and convert inputs
+        try:
+            task_id = int(request.form["id"])
+
+            if not task_id:
+                state = "eNoID"
+                return generateUpdates(f"0${state}", updateTasks=False)
+
+        except ValueError:
+            state = "eVerror"
+            return generateUpdates(f"0${state}",updateTasks=False)
+
+        db = get_db()
+        try:
+            cur = db.execute(
+                "DELETE FROM blockedsites WHERE id = ?",
+                (
+                    int(request.form["id"]),
+                ),
+            )
+            db.commit()
+        except sqlite3.Error:
+            state = "eDatabaseError"
+            return generateUpdates(f"0${state}",updateTasks=False)
+        return generateUpdates(state, updates=[{"action": "innerHTML", "selector": ".sitesList", "value": render_template("blockedSitesCard.html", sites=get_db().execute("SELECT * FROM blockedsites").fetchall())}], updateTasks=False)
+
+    else:
+        return generateUpdates(state)
+
+
 @app.route("/api/deleteaccount", methods=["GET"])
 def goodbyecruelworld():
     # First check: Referer protection against prank links
     referer = request.headers.get("Referer")
     origin = request.headers.get("Origin")
-    allowed_origins = ["https://gt.sometgirl.online"]
+    allowed_origins = [os.getenv("APPHOST")]
     if origin not in allowed_origins and (
         not referer or not any(referer.startswith(o) for o in allowed_origins)
     ):
