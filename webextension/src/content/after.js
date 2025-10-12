@@ -12,18 +12,21 @@ chrome.runtime.sendMessage({ type: "getDomains" }, (response) => {
 });
 
 function handlePage() {
-  const blocked = domains.filter(d => !unblocked.includes(d));
-
-  console.log("Blocked domains:", blocked);
-  const isBlocked = blocked.some(domain => {
-    return location.hostname === domain || location.hostname.endsWith(`.${domain}`);
-  });
-
-  if (isBlocked) {
-    console.log("Blocked:", location.hostname);
-
-    const ytHosts = ["youtube.com", "youtube-nocookie.com"];
-    if (ytHosts.some(h => location.hostname === h || location.hostname.endsWith(`.${h}`)) &&
+  let blockedPatterns = [];
+  console.log(domains);
+  domains.forEach((domain)=>{
+    console.log(unblocked.includes(domain.domain))
+    if(unblocked.includes(domain.domain)){
+    }
+    else{
+      blockedPatterns.push(new RegExp(`(^|\\.)${domain.domain.replace(/\./g, '\\.')}$`))
+    }
+  })
+  console.log(blockedPatterns)
+  if (blockedPatterns.some(r => r.test(location.hostname))) {
+    console.log("WOOP WOOP DATS DA SOUND OF DA POLICE YOU NEED TO WORK")
+    // Allow YouTube embeds
+    if ([/youtube\.com/, /youtube-nocookie\.com/].some(r => r.test(location.href)) &&
         location.pathname.startsWith("/embed/")) {
       return;
     }
@@ -35,4 +38,3 @@ function handlePage() {
     });
   }
 }
-

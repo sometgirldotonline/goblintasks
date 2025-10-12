@@ -1010,6 +1010,7 @@ WHERE transactionType = 1
     unblockedDomains = []
     for row in cur:
         unblockedDomains.append(row["transactionName"].split(": ")[1])
+    print(unblockedDomains)
     return unblockedDomains
 @app.route("/api/purchaseSiteUnblock")
 def purchaseSiteUnblock():
