@@ -861,6 +861,13 @@ Once downloaded, you can browse your user data using any SQLite viewer tool like
 </center>
 """
 
+@app.route("/api/generateShortLivedVerytrustableToken")
+def genSLVT():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    return {"token":generate_deletion_token(session["github_id"])}
+    
+
 
 @app.route("/api/deleteaccountforreals", methods=["GET"])
 def actuallydeleteaccount():
@@ -990,6 +997,59 @@ def configureAnaylitics():
         session["enableAnal"] = False
         return generateUpdates("1$disabled")
 
+@app.route("/api/getUnblockedSitesNow")
+def GUSN():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    db = get_db()
+    cur = db.execute(f"""SELECT *
+FROM transactions
+WHERE transactionType = 1
+  AND transactionStamp >= ? - 900;
+""", (time.time(),))
+    unblockedDomains = []
+    for row in cur:
+        unblockedDomains.append(row["transactionName"].split(": ")[1])
+    return unblockedDomains
+@app.route("/api/purchaseSiteUnblock")
+def purchaseSiteUnblock():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    if "token" in request.args and "domain" in request.args:
+        if validate_deletion_token(request.args["token"], session["github_id"]):
+            db = get_db()
+            # Get the unblock cost first
+            site_data = db.execute('SELECT unblockCost FROM blockedsites WHERE domain = ?', (request.args["domain"],)).fetchone()
+            if site_data:
+                unblock_cost = -site_data["unblockCost"]  # Negative because it's a cost
+                db.execute("""
+                    INSERT INTO transactions (
+                        transactionStamp,
+                        transactionCost,
+                        transactionType,
+                        transactionName
+                    )
+                    VALUES (?, ?, ?, ?)
+                """, (time.time(), unblock_cost, 1, f'Unblock: {request.args["domain"]}'))
+                db.commit()
+            return {"success":1}
+        else:
+            return {"success":0,"why":"invalidToken"}
+    return {"success":0,"why":"missParam"}
+        
+
+@app.route("/api/getBlockedSiteData")
+def gbsd():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    cur = get_db().execute("SELECT * FROM blockedsites")
+    columns = [column[0] for column in cur.description]
+    rows = cur.fetchall()
+    data = []
+    for row in rows:
+        row_dict = {columns[i]: row[i] for i in range(len(columns))}
+        data.append(row_dict)
+    return data
 @app.route("/api/health", methods=["GET"])
 def healthAPI():
     ghApiStat = "unknown"
@@ -1013,7 +1073,7 @@ def healthAPI():
 
 if __name__ == "__main__":
     if os.getenv("PROTOCOL") == "HTTPS": 
-        app.run(port=os.getenv("port"), ssl_context=("cert.pem", "key.pem"))
+        app.run(port=os.getenv("port"), ssl_context=(os.getenv("certfile"), os.getenv("keyfile")))
     elif os.getenv("PROTOCOL") == "HTTP": 
         app.run(port=os.getenv("port"))
     

@@ -1,10 +1,38 @@
-setTimeout(()=>{// content script
-const blockedPatterns = [/facebook\.com/, /youtube\.com/, /youtube-nocookie\.com/];
-
-if (blockedPatterns.some(r => r.test(location.href))) {
-  if([/youtube\.com/, /youtube-nocookie\.com/].some(r => r.test(location.href)) && location.pathname.startsWith("/embed/")){
-    return
+// content script
+let domains = [];
+let unblocked = []
+// Request initial domains
+chrome.runtime.sendMessage({ type: "getDomains" }, (response) => {
+  if (response) {
+    domains = response.blocklist;
+    unblocked = response.unblocked;
+    console.log(domains, unblocked)
+    handlePage();
   }
-  chrome.runtime.sendMessage({ type: "blockPage", blockedDomain: location.href, blockedTitle: document.title });
+});
+
+function handlePage() {
+  const blocked = domains.filter(d => !unblocked.includes(d));
+
+  console.log("Blocked domains:", blocked);
+  const isBlocked = blocked.some(domain => {
+    return location.hostname === domain || location.hostname.endsWith(`.${domain}`);
+  });
+
+  if (isBlocked) {
+    console.log("Blocked:", location.hostname);
+
+    const ytHosts = ["youtube.com", "youtube-nocookie.com"];
+    if (ytHosts.some(h => location.hostname === h || location.hostname.endsWith(`.${h}`)) &&
+        location.pathname.startsWith("/embed/")) {
+      return;
+    }
+
+    chrome.runtime.sendMessage({
+      type: "blockPage",
+      blockedDomain: location.href,
+      blockedTitle: document.title
+    });
+  }
 }
-}, 0)
+

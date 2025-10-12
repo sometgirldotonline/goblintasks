@@ -50,11 +50,14 @@
     "scripting",
     "webRequest",
     "webRequestBlocking",
-    "<all_urls>"
+    "<all_urls>",
+    "cookies"
   ],
   "host_permissions": [
-    "<all_urls>"
-  ],
+    "<all_urls>",
+    "https://gt.sometgirl.online/*",
+    "https://localhost/"
+    ],
   "web_accessible_resources": [
   {
     "resources": ["assets/icons/goblintasks64px.png"],
