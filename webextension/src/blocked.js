@@ -31,6 +31,13 @@ document.querySelector(".buyUnblock").onclick = function () {
         chrome.runtime.sendMessage({ type: "purchaseUnblock", domain: thisDomain.domain }, (response) => {
             if (response) {
                 console.log(response)
+                if (response.success == 0) {
+                    alert(response.why || "An unknown error occured")
+                }
+                else {
+                    alert("Payment successful")
+                    window.location.href = decodeURIComponent(window.location.search.replace("?", ""))
+                }
             }
         })
     }
@@ -48,3 +55,14 @@ chrome.runtime.sendMessage({ type: "getDomains" }, (response) => {
         })
     }
 });
+chrome.runtime.sendMessage({ type: "getEndOfWP" }, (response) => {
+    const wpEnd = response;
+    if (wpEnd == null) {
+        window.location.href = decodeURIComponent(window.location.search.replace("?", ""))
+    }
+    else if (!wpEnd || Date.now() > wpEnd) {
+        window.location.href = decodeURIComponent(window.location.search.replace("?", ""))
+    } else {
+
+    }
+})

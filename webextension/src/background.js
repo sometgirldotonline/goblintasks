@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       try {
         const data = await fetchWithSession("/api/getBlockedSiteData");
         console.log(data);
-        sendResponse({blocklist: data, unblocked: await fetchWithSession("/api/getUnblockedSitesNow")});
+        sendResponse({ blocklist: data, unblocked: await fetchWithSession("/api/getUnblockedSitesNow") });
       } catch (error) {
         console.error(error);
         sendResponse({ error: error.message });
@@ -59,11 +59,25 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         console.log("Purchase request completed:", purchaseReq);
         sendResponse(purchaseReq);
       }
-      catch(error) {
+      catch (error) {
         console.error("Error in purchaseUnblock:", error);
-        sendResponse({"success":0,"why":"idfk man fuck meee"});
+        sendResponse({ "success": 0, "why": "idfk man fuck meee" });
       }
     })();
+    return true;
+  }
+  else if (msg.type === "getEndOfWP") {
+    console.log("getEndOfWP:", msg);
+    (async () => {
+      try {
+        chrome.storage.local.get(["wpEnd"]).then((result) => {
+          sendResponse(result.wpEnd);
+        })
+        }
+      catch (error) {
+          sendResponse(null);
+        }
+      })();
     return true;
   }
 });

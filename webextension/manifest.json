@@ -49,9 +49,8 @@
     "tabs",
     "scripting",
     "webRequest",
-    "webRequestBlocking",
-    "<all_urls>",
-    "cookies"
+    "cookies",
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>",

@@ -1,35 +1,220 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="shortcut icon" href="/assets/icons/goblintasks128px.png" type="image/png">
-  <title>Goblindeeznutstasks</title>
+  <title>Goblintasks</title>
   <style>
+    :root{
+      --bgc: #f6f7f9;
+      --card: #ffffff;
+      --muted: #5b6b77;
+      --fg: #0b1316;
+      --primary: #4e60f8;
+      --primary-contrast: #ffffff;
+      --accent: #76b4fa;
+      --radius: 10px;
+      --outline: rgba(11,19,22,0.06);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
     body {
-      width: 300px;
-      padding: 10px;
-      background: linear-gradient(#5BFAC2, #A9D8F5);
+      width: 280px;
+      padding: 14px;
+      background: var(--bgc);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      box-sizing: border-box;
     }
 
-    button {
-      width: 100%;
-      padding: 10px;
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-h1 {
-  color: #fff;
-text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+    header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
 
-}
+    header img {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid var(--outline);
+      padding: 4px;
+    }
 
+    header h1 {
+      font-size: 16px;
+      margin: 0;
+      color: var(--fg);
+      font-weight: 600;
+    }
 
+    .statusRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: var(--card);
+      border: 1px solid var(--outline);
+      border-radius: 8px;
+    }
+
+    .sWpControls {
+      gap: 12px;
+      padding: 12px;
+      background: var(--card);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius);
+      align-items: center;
+    }
+
+    label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-right: 6px;
+    }
+
+    .inputs {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    input[type="number"]{
+      width: auto;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--outline);
+      background: transparent;
+      color: var(--fg);
+      text-align: center;
+      font-size: 13px;
+      width: 5ch;
+    }
+
+    .controlsCol {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .startBtn {
+      background: var(--primary);
+      color: var(--primary-contrast);
+    }
+
+    .stopBtn {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--outline);
+    }
+
+    .startBtn:hover {
+      filter: brightness(0.95);
+    }
+
+    .stopBtn:hover {
+      background: rgba(0,0,0,0.02);
+    }
+
+    .wpStat {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(0,0,0,0.03);
+      color: var(--fg);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    footer {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .wpStopped .timeform, .wpStopped .startBtn{
+      display: block;
+    }
+    .wpStopped .stopBtn{
+      display: none;
+    }
+    .wpRunning .timeform, .wpRunning .startBtn{
+      display: none;
+    }
+    .wpRunning .stopBtn{
+      display: block;
+    }
 
   </style>
 </head>
 
-<body>
-  <h1>Goblintasks Extension</h1>
-  i make the page blocking magic work
+<body class="wpStopped">
+  <div class="container">
+    <header>
+      <img src="/assets/icons/goblintasks128px.png" alt="logo">
+      <h1>Goblintasks Extension</h1>
+    </header>
+
+    <div class="statusRow">
+      <span>Work Period: <b><code class="wpStat">Not running</code></b></span>
+      <span class="small">v0.3.6</span>
+    </div>
+
+    <section class="sWpControls" aria-label="Start work period">
+      <div class="timeform">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
+          <label for="hours">Hours</label>
+          <input type="number" name="hours" id="hours" min="0" value="0" aria-label="hours">
+          <label for="mins">Minutes</label>
+          <input type="number" id="mins" min="0" max="59" value="25" aria-label="minutes">
+        </div>
+      </div>
+
+      <div class="controlsCol">
+        <button class="btn startBtn">Start</button>
+        <button id="stopBtn" class="btn stopBtn">Stop</button>
+      </div>
+    </section>
+
+    <footer>
+      <a href="https://gt.sometgirl.online" style="color:var(--primary);text-decoration:none;font-weight:600;">Open App</a>
+    </footer>
+    <br>
+  </div>
 
   <script src="popup.js"></script>
 </body>
