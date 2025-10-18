@@ -1005,7 +1005,8 @@ def GUSN():
     cur = db.execute(f"""SELECT *
 FROM transactions
 WHERE transactionType = 1
-  AND transactionStamp >= ? - 900;
+  AND transactionStamp >= ? - 900
+  AND transactionName LIKE 'Unblock%';
 """, (time.time(),))
     unblockedDomains = []
     for row in cur:
@@ -1021,6 +1022,8 @@ def purchaseSiteUnblock():
             db = get_db()
             # Get the unblock cost first
             site_data = db.execute('SELECT unblockCost FROM blockedsites WHERE domain = ?', (request.args["domain"],)).fetchone()
+            if db.execute("SELECT COALESCE(SUM(transactionCost), 0) AS total_value FROM transactions;").fetchone()["total_value"] - site_data["unblockCost"] < 0:
+                return {"success":0, "why":"Ooops, you don't have enough money for this, do your work, and try again."}
             if site_data:
                 unblock_cost = -site_data["unblockCost"]  # Negative because it's a cost
                 db.execute("""
@@ -1033,6 +1036,33 @@ def purchaseSiteUnblock():
                     VALUES (?, ?, ?, ?)
                 """, (time.time(), unblock_cost, 1, f'Unblock: {request.args["domain"]}'))
                 db.commit()
+            return {"success":1}
+        else:
+            return {"success":0,"why":"invalidToken"}
+    return {"success":0,"why":"missParam"}
+  
+@app.route("/api/makePurchase")
+def makePurchase():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    if "token" in request.args and "name" in request.args and "type" in request.args and "cost" in request.args:
+        if request.args["type"] == 2:
+            return {"success": 0, "why": "You cannot earn coins from a task without completing it. Just use the task completion api."}
+        if validate_deletion_token(request.args["token"], session["github_id"]):
+            db = get_db()
+            # Get the unblock cost first
+            if db.execute("SELECT COALESCE(SUM(transactionCost), 0) AS total_value FROM transactions;").fetchone()["total_value"] + int(request.args["cost"]) < 0:
+                return {"success":0, "why":"Ooops, you don't have enough money for this."}
+            db.execute("""
+                    INSERT INTO transactions (
+                        transactionStamp,
+                        transactionCost,
+                        transactionType,
+                        transactionName
+                    )
+                    VALUES (?, ?, ?, ?)
+            """, (time.time(), int(request.args["cost"]), int(request.args["type"]), request.args["name"]))
+            db.commit()
             return {"success":1}
         else:
             return {"success":0,"why":"invalidToken"}
