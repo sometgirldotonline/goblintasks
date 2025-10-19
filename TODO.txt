@@ -74,3 +74,8 @@ Scope Creep Shit:
 - iCal for tasks with due date
 - Document the API
 - Some mobile app someday
+
+
+UI:
+- Make add task a Modal
+- Markdown notes on tasks
