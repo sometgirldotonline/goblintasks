@@ -235,6 +235,14 @@ def index():
         session["github_id"] = user_info["id"]
         session["github_login"] = user_info["login"]
     db = get_db()
+    cur = db.cursor()
+    cur.execute(f"PRAGMA table_info(tasks);")
+    columns = [info[1] for info in cur.fetchall()]
+
+    if "description" not in columns:
+        cur.execute(f"ALTER TABLE tasks ADD COLUMN description TEXT")
+        db.commit()
+        
     # this be the old way
     # cur = db.execute(
     #     "SELECT userCoins FROM users WHERE userid = ?", (session["github_id"],)
@@ -454,13 +462,15 @@ INSERT INTO tasks (
                         taskCompletion,
                         taskValue,
                         taskName,
-                        ownerID
+                        ownerID,
+                        description
                     )
                     VALUES (
                         -1,
                         ?,
                         ?,
                         0,
+                        ?,
                         ?,
                         ?,
                         ?
@@ -472,6 +482,7 @@ INSERT INTO tasks (
                     task_value,
                     task_name,
                     session["github_id"],
+                    request.form["description"]
                 ),
             )
             db.commit()
@@ -520,6 +531,19 @@ def addSiteDialog():
             "selector": "dialog",
             "value":{"name":"open", "value":"open"}
         }],updateTasks=False)
+
+@app.route("/api/addTaskDialog", methods=["POST"])
+def addTaskDialog():
+    return generateUpdates("1$success", updates=[{
+        "action": "innerHTML",
+        "selector": "dialog",
+        "value":render_template("addTaskModal.html")
+    },{
+            "action": "setAttribute",
+            "selector": "dialog",
+            "value":{"name":"open", "value":"open"}
+        }],updateTasks=False)
+
 
 @app.route("/api/editSiteDialog", methods=["POST"])
 def editSiteDialog():
@@ -591,13 +615,14 @@ def etphonehome():
             cur = db.execute(
                 """
             UPDATE tasks
-            SET taskName = ?, taskValue = ?, dueBy = ?
+            SET taskName = ?, taskValue = ?, dueBy = ?, description = ?
             WHERE ownerID = ? AND taskID = ?;
             """,
                 (
                     task_name,
                     task_value,
                     due_by,
+                    request.form["description"].strip(),
                     session["github_id"],
                     int(request.form["id"]),
                 ),
