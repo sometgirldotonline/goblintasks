@@ -1,0 +1,14 @@
+<section class="addTaskSect card"><span class="title">Add Task</span>
+    <form class="addTaskForm" onsubmit="TaskHandler.addTask(event)" method="dialog">
+        <label for="taskName">Task Name</label>
+        <input type="text" name="taskName" id="taskName" required="true">
+        <label for="taskValue">Task Value</label>
+        <span class="rowify">
+            <input type="number" name="taskValue" id="taskValue" min=0 required="true" value=0> <span style="margin-top: 10px">coins</span></span>
+        <label for="dueBy">Due By <small><i>Optional!</i></small></label>
+        <input type="date" name="dueBy" id="dueBy">
+        <label for="description">Description</label>
+        <textarea name="description" id="description"></textarea>
+        <input type="submit" value="Submit">
+    </form>
+</section>

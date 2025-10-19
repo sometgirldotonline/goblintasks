@@ -6,6 +6,8 @@
     <input type="number" name="taskValue" id="taskValue" min=0 required="true" value="{{ task.taskValue }}">
     <label for="dueBy">Due By <small><i>Optional!</i></small></label>
     <input type="date" name="dueBy" id="dueBy" value="{{ task.dueBy }}">
-    <input type="hidden" hidden name="id" id="id" value="{{ task.taskID }}">
+    <label for="description">Description</label>
+    <textarea name="description" id="description">{{ task.description }}</textarea>
+    <input type="hidden" hidden name="id" id="id" value="{{ task.taskID }}"><br><br>
     <input type="submit" value="Submit">
   </form>
