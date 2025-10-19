@@ -64,3 +64,13 @@ COPY . .
 EXPOSE 5000
 CMD ["python", "app.py"]
 ```
+
+
+Scope Creep Shit:
+- Offline focussed sync (build a smol version of the site into the extension)
+- Search tasks?
+- Reccuring Tasks
+- Task Descriptions
+- iCal for tasks with due date
+- Document the API
+- Some mobile app someday
