@@ -61,6 +61,7 @@ var TaskHandler = {
                     taskName: ev.srcElement.taskName.value,
                     taskValue: ev.srcElement.taskValue.value,
                     dueBy: new Date(ev.srcElement.dueBy.value).getTime() / 1000,
+                    description: ev.srcElement.description.value,
                 }),
                 "method": "POST"
             });
@@ -75,6 +76,25 @@ var TaskHandler = {
             console.error(error)
         }
     },
+    async addTaskDialog() {
+        console.log(`Showing add task dialog`)
+        try {
+            const resp = await fetch(`/api/addTaskDialog`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+            });
+            if (!resp.ok) {
+                throw new Error(`Server Sent Error: ${resp.status}`)
+            }
+            processUpdate(await resp.json())
+        }
+        catch (error) {
+            alert(error)
+            console.error(error)
+        }
+    },
 
     async editTask(ev) {
         try {
@@ -82,6 +102,7 @@ var TaskHandler = {
                 "body": new URLSearchParams({
                     taskName: ev.srcElement.taskName.value,
                     taskValue: ev.srcElement.taskValue.value,
+                    description: ev.srcElement.description.value,
                     id: ev.srcElement.id.value,
                     dueBy: new Date(ev.srcElement.dueBy.value).getTime() / 1000,
                 }),
@@ -342,7 +363,6 @@ function serverSentModal(value) {
     ${!!value.reloadButton ? '<button onclick="window.location.reload()">Reload Page</button>' : "<form method=dialog><input type=submit value=Close></form>"}
     `;
 }
-document.querySelector(".addTaskForm").addEventListener("submit", TaskHandler.addTask)
 
 
 async function pageturn(page) {
@@ -450,3 +470,11 @@ function spawnExplosionReverse(el) {
         setTimeout(() => item.remove(), 790);
     }
 }
+
+window.addEventListener("mouseup", (e) => {
+    const openDialog = document.querySelector("dialog[open]");
+    if (e.target == document.body && openDialog) {
+        openDialog.close();
+    }
+});
+
