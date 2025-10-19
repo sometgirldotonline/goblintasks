@@ -99,7 +99,3 @@ document.querySelector(".stopBtn").addEventListener("click", async () => {
 
 
 updateWpStat();
-
-document.querySelector(".slackButton").addEventListener("click", () => {
-    chrome.runtime.sendMessage("authenticateUserSlack")
-})

@@ -2,6 +2,7 @@ APPVERSION = "0.3.6"
 # Debug logging was added by Github Copilot
 from flask import (
     Flask,
+    current_app,
     redirect,
     url_for,
     render_template,
@@ -24,6 +25,7 @@ import hmac
 import psutil
 from dotenv import load_dotenv
 from flask_dance.contrib.github import make_github_blueprint, github
+from flask_dance.contrib.slack import make_slack_blueprint, slack
 import requests
 from requests.auth import HTTPBasicAuth
 startupTimeStamp = time.time()
@@ -161,9 +163,20 @@ def close_db(error):
 
 
 app.secret_key = os.getenv("flaskDanceSecret")
-blueprint = make_github_blueprint(
+ghblueprint = make_github_blueprint(
     client_id=os.getenv("githubClientID"),
     client_secret=os.getenv("githubClientSecret"),
+)
+slack_scopes = [
+    "openid",
+    "email",
+    "profile"
+]
+
+slackblueprint = make_slack_blueprint(
+    client_id=os.getenv("slackClientID"),
+    client_secret=os.getenv("slackClientSecret"),
+    scope=slack_scopes
 )
 # custom filter (was written by GPT.)
 @app.template_filter()
@@ -173,8 +186,8 @@ def timestamp_to_time(value, thing):
     return datetime.datetime.fromtimestamp(value).strftime(thing)
 
 
-app.register_blueprint(blueprint, url_prefix="/login")
-
+app.register_blueprint(ghblueprint, url_prefix="/login")
+app.register_blueprint(slackblueprint, url_prefix="/slack_login")
 
 def generateUpdates(state,updateTasks=True, updates=[]):
     db = get_db()
@@ -257,6 +270,7 @@ def index():
         enableAnal=session["enableAnal"],
         theme=theme,
         host=os.getenv("APPHOST"),
+        session=session,
     )
 
 
@@ -350,6 +364,8 @@ def uts():
         #     "SELECT COALESCE(SUM(taskValue), 0) AS total_value FROM tasks WHERE ownerID = ? and taskCompletion = 1;",
         #     (session["github_id"],),
         # )
+        if new_completion_value == 1 and "sendMessageOnComplete" in session and "minMsgCoins" in session and thistask[0]['taskValue'] >= session["minMsgCoins"]:
+            requests.get(f"https://goblintasks-webextension-auth-provider.novafurry.workers.dev/congrat?uid={session['slack_user_id']}&taskworth={thistask[0]['taskValue']}")
         return generateUpdates(state)
     else:
         return generateUpdates(f"0${state}")
@@ -942,7 +958,7 @@ def executeaccountdeletion():
     if not token or not validate_deletion_token(token, session["github_id"]):
         return "oops, try again (security issues)", 403
     try:
-        revoke_github_token(blueprint.token["access_token"])
+        revoke_github_token(ghblueprint.token["access_token"])
         os.remove(os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             os.getenv("dataDir"),
@@ -1112,8 +1128,53 @@ def gSD():
     if "key" in request.args:
         return session[request.args["key"]]
     
-    
-    
+@app.route("/auth/slackRedirect")
+def slackRedirect():
+    try:
+        token_response = requests.post(
+            "https://slack.com/api/openid.connect.token",
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            data={
+                "code": request.args.get("code"),
+                "client_id": os.getenv("slackClientID"),
+                "client_secret": os.getenv("slackClientSecret"),
+                "redirect_uri": request.url_root + "auth/slackRedirect",
+            },
+        )
+        token_response.raise_for_status()
+        data = token_response.json()
+        print(data)
+        user_info_response = requests.get(
+            "https://slack.com/api/openid.connect.userInfo",
+            headers={"Authorization": f"Bearer {data['access_token']}"},
+        )
+        user_info_response.raise_for_status()
+        user_info = user_info_response.json()
+        print(user_info)
+        session["slack_user_id"] = user_info["https://slack.com/user_id"]
+        session["slack_user_name"] = user_info["name"]
+        return redirect(url_for("index"))
+    except Exception as e:
+        return f"Error: {e}"
+
+@app.route("/auth/slackLogin")
+def slackLogin():
+    slack_auth_url = (
+        "https://slack.com/openid/connect/authorize"
+        "?response_type=code"
+        f"&client_id={os.getenv('slackClientID')}"
+        f"&redirect_uri={request.url_root}auth/slackRedirect"
+        "&scope=openid profile email"
+    )
+    return redirect(slack_auth_url)
+@app.route("/api/setMessageCompletion")
+def setMessageCompletion():
+    params = {"sendMessageOnComplete": request.args.get("sendMessageOnComplete", "off"), "minMsgCoins": request.args.get("minMsgCoins", 10)}
+    if "sendMessageOnComplete" in params and "minMsgCoins" in params:
+        session["sendMessageOnComplete"] = params["sendMessageOnComplete"].lower() == "on"
+        session["minMsgCoins"] = int(params["minMsgCoins"])
+        return redirect(url_for("index"))
+    return "missingParams", 400
 if __name__ == "__main__":
     if os.getenv("PROTOCOL") == "HTTPS": 
         app.run(port=os.getenv("port"), ssl_context=(os.getenv("certfile"), os.getenv("keyfile")))

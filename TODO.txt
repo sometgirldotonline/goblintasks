@@ -4,13 +4,15 @@ x 2025-10-02 2025-10-02 Add task crea   tion functionality
 x 2025-10-11 2025-10-02 Add settings page (with capability to delete account and data)
 x 2025-10-11 2025-10-02 Add Dark Mode
     ^ technically magic theme is dark mode?
-2025-10-02 Build extension
+x 2025-10-19 2025-10-02 Build extension
 2025-10-02 Mobile App?
 
 need:
-- store pages to block
-- store work period statuses and such
-- store to purchase unblocks
+x 2025-10-19 - store pages to block
+x 2025-10-19 - store work period statuses and such
+    ^ we dont store this outside of the browser rn
+x 2025-10-19 - store to purchase unblocks
+    ^ built into the block page
 
 security/reliablility:
 - Validation

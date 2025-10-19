@@ -10,7 +10,20 @@
         <label for="taskValue">Task Value</label>
         <input type="number" name="taskValue" id="taskValue" min=0 required="true" value=0>
         <label for="dueBy">Due By <small><i>Optional!</i></small></label>
-        <input type="date" name="dueBy" id="dueBy">
+        <input type="date" name="dueBy" id="dueBy"><br><br>
         <input type="submit" value="Submit">
+    </form>
+</section>
+<section class="slackIntegration card"><span class="title">Slack Integration</span>
+    <p>Connect your Hack Club Slack account to notify your colleagues when you complete tasks, so they can congratulate
+        you!</p>
+    <button class="connectSlackBtn" onclick="window.location.href='/auth/slackLogin'">Connect Slack</button>
+    <button class="disconnectSlackBtn" onclick="window.location.href='/auth/slackLogout'">Disconnect Slack</button>
+    <br><b>Slack Status: {{ 'Logged In as ' + session['slack_user_name'] + ' (' + session['slack_user_id'] + ')' if
+        session.get('slack_user_id') else 'Disconnected' }}</b><br>
+    <form action="/api/setMessageCompletion" method="get">
+        <label for="sendMessageOnComplete"><input type="checkbox" name="sendMessageOnComplete" id="sendMessageOnComplete" {% if session.get('sendMessageOnComplete') %}checked{% endif %}> Send a Message if
+            I complete a task that is worth at least <input type="number" min=10 length=3 id="minMsgCoins" name="minMsgCoins"
+                style="width: 5ch;" required="true" value="{{ session.get('minMsgCoins', 10) }}"></label><button class="saveMsgState">Save</button>
     </form>
 </section>
