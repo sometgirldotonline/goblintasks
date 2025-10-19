@@ -1102,6 +1102,18 @@ def healthAPI():
         "reqPerSec": format(requests_per_second(), ".2f")
     }   
 
+@app.route("/api/setSessionData")
+def sSD():
+    if "key" in request.args and "value" in request.args:
+        session[request.args["key"]] = request.args["value"]
+        return session[request.args["key"]]
+@app.route("/api/getSessionData")
+def gSD():
+    if "key" in request.args:
+        return session[request.args["key"]]
+    
+    
+    
 if __name__ == "__main__":
     if os.getenv("PROTOCOL") == "HTTPS": 
         app.run(port=os.getenv("port"), ssl_context=(os.getenv("certfile"), os.getenv("keyfile")))

@@ -85,7 +85,7 @@ document.querySelector(".stopBtn").addEventListener("click", async () => {
                 chrome.storage.local.remove(["wpEnd"])
                 updateWpStat()
             }
-            else{
+            else {
                 alert(purchaseReq.why || "An unknown error occured")
             }
         }
@@ -93,9 +93,13 @@ document.querySelector(".stopBtn").addEventListener("click", async () => {
             console.error("Error in purchaseEarlyEnd:", error);
             alert(error)
         }
-        
+
     }
 })
 
 
 updateWpStat();
+
+document.querySelector(".slackButton").addEventListener("click", () => {
+    chrome.runtime.sendMessage("authenticateUserSlack")
+})

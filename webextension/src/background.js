@@ -73,11 +73,34 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         chrome.storage.local.get(["wpEnd"]).then((result) => {
           sendResponse(result.wpEnd);
         })
-        }
+      }
       catch (error) {
-          sendResponse(null);
-        }
-      })();
+        sendResponse(null);
+      }
+    })();
     return true;
+  }
+  else if (msg.type === "authenticateUserSlack") {
+    console.log("authenticateUserSlack:", msg);
+    let redirURI = chrome.identity.getRedirectURL('slack')
+    let clientID = "2210535565.9723406430082"
+    chrome.identity.launchWebAuthFlow(
+      { url: `https://slack.com/openid/connect/authorize?scope=openid%20profile%20email&response_type=code&client_id=${clientID}&redirect_uri=${encodeURIComponent(redirURI)}`, interactive: true },
+      function (redirectUrl) {
+        // Extract ?code= from redirectUrl
+        const urlParams = new URLSearchParams(new URL(redirectUrl).search);
+        const code = urlParams.get('code');
+
+        // Exchange code for access token
+        fetch(`https://goblintasks-webextension-auth-provider.novafurry.workers.dev/slack?code=${code}&redirURI=${redirURI}`, {
+          method: 'GET',
+        })
+          .then(res => res.text())
+          .then(data => {
+            console.log(data); // Contains user_id, email, name, etc.
+            chrome.storage.local.set({slackID: data})
+          });
+      }
+    );
   }
 });
