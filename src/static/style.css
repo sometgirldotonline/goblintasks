@@ -9,7 +9,7 @@
     --outline: rgba(0, 0, 0, 0.1);
 }
 
-html.magic *{
+html.magic * {
     --bgc: linear-gradient(0deg, #11002a, #6420a8);
     --fgc: #f6e1ff;
     --primary: #f6bafb;
@@ -19,9 +19,11 @@ html.magic *{
     --cardbg: #6420a834;
     --outline: #f6e1ff4c;
 }
-.html.magic .card{
+
+.html.magic .card {
     backdrop-filter: blur(10px);
 }
+
 /* dark mode is really ugly so we ignore it for now */
 /* 
 @media (prefers-color-scheme: dark) {
@@ -36,16 +38,17 @@ html.magic *{
         --navheight: 35px;
     }
 } */
-a{
+a {
     color: var(--fgc)
 }
+
 body {
     margin: 0px;
     background: var(--bgc);
     font-family: sans-serif;
     color: var(--fgc);
     overflow: hidden;
-    min-height:100vh;
+    min-height: 100vh;
 }
 
 section.sidebar {
@@ -165,7 +168,7 @@ ul.tasksList li>span {
 }
 
 .taskDescription,
-.taskDescription * {
+.taskDescription *:not(details, summary) {
     display: inline;
 }
 
@@ -306,7 +309,8 @@ section.maincontent {
     margin-right: 10px;
 }
 
-input[type=submit], .fancyfancyfancy{
+input[type=submit],
+.fancyfancyfancy {
     all: unset;
     background: var(--accent);
     color: var(--bgc);
@@ -319,7 +323,8 @@ input[type=submit], .fancyfancyfancy{
     width: calc(100% - 15px);
     text-align: center;
 }
-.buttonrow{
+
+.buttonrow {
     display: flex;
     gap: 5px;
 }
@@ -329,7 +334,7 @@ form label {
     margin-top: 10px;
 }
 
-form input:not(input[type=checkbox]) {
+form input:not(input[type=checkbox], input[type=submit]), textarea {
     all: unset;
     background: var(--secondary);
     padding: 5px;
@@ -347,100 +352,118 @@ form input:not(input[type=checkbox]) {
     display: none;
 }
 
-dialog{
+dialog {
     border: 0px;
     background: var(--bgc);
     padding: 0;
     border-radius: 5px;
     box-shadow: #010e0647 2px 2px 10px;
     width: fit-content;
-    z-index: 11 ;
+    z-index: 11;
     position: fixed;
     top: 15%;
     min-width: 30%;
 }
-dialog .title{
+
+dialog .title {
     text-align: center;
     width: 100%;
 }
-body:has(dialog[open])::before{
+
+body:has(dialog[open])::before {
     width: 100vw;
     height: 100vh;
-    position:fixed;
-    top:0px;
-    left:0px;
+    position: fixed;
+    top: 0px;
+    left: 0px;
     background: rgba(0, 0, 0, 0.5);
     display: block;
     content: ' ';
     z-index: 10;
 }
-dialog > .card{
+
+dialog>.card {
     box-shadow: none;
     margin: 0px;
     z-index: 110;
     position: relative;
     width: calc(100% - 30px);
 }
-dialog:not(:has(.card)){
+
+dialog:not(:has(.card)) {
     padding: 15px;
 
 }
-.sidebar footer, .sidebar footer *{
+
+.sidebar footer,
+.sidebar footer * {
     font-size: 0.8em;
-    color:var(--fgc) !important;
+    color: var(--fgc) !important;
     font-style: italic;
     text-align: center;
 }
 
-button.fancyfancyfancy.danger{
+button.fancyfancyfancy.danger {
     background: rgb(255, 49, 49);
 }
+
 path {
     stroke: var(--fgc)
 }
-    @keyframes explode {
-      0% {
+
+@keyframes explode {
+    0% {
         transform: scale(0) translate(0, 0) rotate(0deg);
         opacity: 1;
-      }
-      100% {
+    }
+
+    100% {
         transform: scale(1) translate(calc(var(--x) * 1px), calc(var(--y) * 1px)) rotate(720deg);
         opacity: 0;
-      }
     }
+}
 
-    .item {
-      position: absolute;
-      width: 32px;
-      height: 32px;
-      pointer-events: none;
-      animation: explode 2s ease-out forwards;
-    }
-    table, thead, tbody, tr, td{
-        min-width: fit-content;
-        border-collapse: collapse;
-    }
-    thead{
-        background: var(--secondary);
-    }
-    thead td{
-        padding: 5px;
-    }
-    tr:nth-of-type(2n){
-        background: var(--cardbg);
-    }
+.item {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    pointer-events: none;
+    animation: explode 2s ease-out forwards;
+}
+
+table,
+thead,
+tbody,
+tr,
+td {
+    min-width: fit-content;
+    border-collapse: collapse;
+}
+
+thead {
+    background: var(--secondary);
+}
+
+thead td {
+    padding: 5px;
+}
+
+tr:nth-of-type(2n) {
+    background: var(--cardbg);
+}
 
 
 
-    
-        .itemReverse {
-      position: absolute;
-      width: 32px;
-      height: 32px;
-      pointer-events: none;
-      animation: explode 0.8s ease-out reverse;
-    }
-    ul.sitesList li {
+
+.itemReverse {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    pointer-events: none;
+    animation: explode 0.8s ease-out reverse;
+}
+
+ul.sitesList li {
     list-style-type: none;
     margin: 0px;
     display: block;
@@ -481,6 +504,7 @@ ul.sitesList {
 .siteworth {
     font-weight: bold;
 }
+
 .site button {
     background: none;
     border: 0px;
@@ -488,6 +512,35 @@ ul.sitesList {
 }
 
 
-dialog *{
+dialog * {
     color: var(--fgc)
 }
+
+button:not(.task button, .sidebar button, .navbar button),  
+input[type=submit] {
+    cursor: pointer;
+    background-color: var(--secondary) !important;
+    color: var(--fgc);
+    text-align: center !important;
+    user-select: none;
+    all: unset;
+    padding: 5px;
+    border-radius: 5px;
+    width: fit-content;
+}
+form button, form input[type=submit] {
+    width: calc(100% - 10px);
+
+}
+.rowify{
+    display: flex;
+    gap: 5px;
+
+}
+.rowify > *{
+    margin: 0;
+    flex-grow: 0;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+section > button:last-child{width: calc(100% - 10px)}
