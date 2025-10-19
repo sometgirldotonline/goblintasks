@@ -9,12 +9,11 @@
   {% if enableAnal %}
   <script defer data-domain="{{ host }}" src="https://plausible.sometgirl.online/js/script.js"></script>
   {% endif %}
-
 </head>
 
-<body >
+<body>
   <dialog>
-    
+
   </dialog>
   {% if showAnayliticsNotice %}
   <dialog open id="analyticsWindow">
@@ -58,7 +57,7 @@
             class="username">{{username}}</span></button></span>
     </nav>
     <section class="page maincontent active">
-        {% include 'homePage.html' %}
+      {% include 'homePage.html' %}
     </section>
   </main>
   <script src="static/app.js"></script>

@@ -2,13 +2,18 @@
 <li class="task" id="task-{{ row.taskID }}">
     <label for="ckbx-{{ row.taskID }}">
         <!-- checked value fixed by GPT, turns out you need to remove it to uncheck :/ -->
-        <input type="checkbox" class="taskcheck" id="ckbx-{{ row.taskID }}" {% if row.taskCompletion == 1 %}checked{% endif %}
-            onchange="TaskHandler.updateTaskState('{{ row.taskID }}', this.checked)">
+        <input type="checkbox" class="taskcheck" id="ckbx-{{ row.taskID }}" {% if row.taskCompletion==1 %}checked{%
+            endif %} onchange="TaskHandler.updateTaskState('{{ row.taskID }}', this.checked)">
         <span style="width:100%; flex-grow: 1;"><span class="tasktitle">{{ row.taskName }}</span><br>
             <span class="taskDescription">
                 <i>Worth: </i><span class="taskworth v-currency">{{ row.taskValue }}</span> &middot;
                 <i>Due by: </i><span class="v-date dueby"> {{ 'No Due Date' if row.dueBy == -1 else ( row.dueBy |
                     timestamp_to_time('%Y-%m-%d') ) }}</span>
+                <br>
+                <details>
+                    <summary><i>Task Description</i></summary>
+                    <p>{{ row.description if row.description else "No Description" }}</p>
+                </details>
             </span>
         </span>
         <button class="editTask rhs" onclick="TaskHandler.editTaskDialog({{ row.taskID }})">✏️</button>
