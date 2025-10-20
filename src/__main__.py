@@ -573,7 +573,7 @@ def abtdiag():
             "action": "innerHTML",
             "selector": "dialog",
             "value":f"""<section class="card"><span class="title">About</span>
-<p style="color:white">Version: {APPVERSION}</p>
+<p>Version: {APPVERSION}</p>
 <form method="dialog"><button type="submit" class="fancyfancyfancy">Close</button></form>"""
         },{
                 "action": "setAttribute",

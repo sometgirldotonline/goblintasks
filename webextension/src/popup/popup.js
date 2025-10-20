@@ -1,4 +1,32 @@
-serverURL = "https://localhost"
+serverURL = "https://gt.sometgirl.online"
+
+chrome.storage.local.get(["getAppHost"]).then((result) => {
+    if (result.serverURL) {
+        serverURL = result.serverURL;
+    }
+});
+
+document.querySelectorAll(".appHost").forEach((el) => {
+    el.innerText = (new URL(serverURL)).hostname;
+    el.href = serverURL;
+});
+document.querySelectorAll(".signInLink").forEach((el) => {
+    el.href = serverURL + "";
+    el.target = "_blank";
+    el.rel = "noopener noreferrer";
+});
+
+chrome.cookies.get({
+    url: serverURL,
+    name: "session"
+}, (cookie) => {
+    if (cookie) {
+        document.querySelector(".notSignedIn").remove()
+    }
+    else {
+        document.querySelector(".isSignedIn").remove()
+    }
+});
 
 async function fetchWithSession(path) {
     return new Promise((resolve, reject) => {
@@ -13,7 +41,7 @@ async function fetchWithSession(path) {
 
             try {
                 const res = await fetch(`${serverURL}${path}`, {
-                    method: "GET", // or "POST"
+                    method: "GET",
                     headers: {
                         "X-Session-Cookie": cookie.value,
                         "Content-Type": "application/json"
