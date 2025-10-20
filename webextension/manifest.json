@@ -2,7 +2,7 @@
   "name": "GoblinTasks Extension",
   "description": "Page blocking for Goblintasks",
   "homepage_url": "https://github.com/sometgirldotonline/goblintasks",
-  "version": "0",
+  "version": "3",
   "manifest_version": 3,
   "action": {
     "default_title": "GoblinTasks",
@@ -47,22 +47,12 @@
   ],
   "permissions": [
     "tabs",
-    "scripting",
-    "webRequest",
     "cookies",
-    "storage",
-    "identity"
+    "storage"
   ],
   "host_permissions": [
-    "<all_urls>",
-    "https://gt.sometgirl.online/*",
-    "https://localhost/"
-    ],
-  "web_accessible_resources": [
-  {
-    "resources": ["assets/icons/goblintasks64px.png"],
-    "matches": ["<all_urls>"]
-  }
-]
+    "https://gt.sometgirl.online/*"
+    ]
+
 
 }

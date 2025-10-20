@@ -1,4 +1,4 @@
-serverURL = "https://localhost"
+serverURL = "https://gt.sometgirl.online"
 domains = []
 thisDomain = null
 document.querySelector(".blockedFavicon").src = `https://www.google.com/s2/favicons?domain=${new URL(decodeURIComponent(window.location.search.substring(1))).hostname}&sz=128`

@@ -1,4 +1,4 @@
-serverURL = "https://localhost"
+serverURL = "https://gt.sometgirl.online"
 async function fetchWithSession(path) {
   return new Promise((resolve, reject) => {
     chrome.cookies.get({
