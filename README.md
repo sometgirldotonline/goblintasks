@@ -1,4 +1,5 @@
 # Goblintasks
+Get the Browser Extension [Here](https://chromewebstore.google.com/detail/hiobgjoilbnefkkceafbhgjiajaebamc/) (you will need to manually download the extension from the webextension folder as its going through review rn)
 <center><img style="text-align=center" width=50% src="readme-assets/screenshot-homepage-desktop.png"/></center>
 Reward based Todos app for ADHDers. Goblintasks blocks distracting sites (specified by you) during "work periods" set by you. (coming soon) To unblock a site (or functionality on it, keep reading), you need to spend an amount of coins (specified by you for each site), you can unblock it in blocks of 5 minutes. You earn coins by checking off tasks (each task has a value specified by you)
 
