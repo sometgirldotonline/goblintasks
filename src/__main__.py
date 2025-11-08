@@ -242,7 +242,12 @@ def index():
     if "description" not in columns:
         cur.execute(f"ALTER TABLE tasks ADD COLUMN description TEXT")
         db.commit()
-        
+    if "reoccurs" not in columns:
+        cur.execute(f"ALTER TABLE tasks ADD COLUMN reoccurs TEXT")
+        db.commit()
+    if "moddate" not in columns:
+        cur.execute(f"ALTER TABLE tasks ADD COLUMN moddate NUMERIC")
+        db.commit()
     # this be the old way
     # cur = db.execute(
     #     "SELECT userCoins FROM users WHERE userid = ?", (session["github_id"],)
@@ -287,11 +292,16 @@ def notforyou():
     return "no"
 
 
+@app.route("/api/justGimmeTheTasksBro", methods=["GET"])
+def jgttb():
+    state = "1$it probably worked idk"
+    selector = "ul.tasksList"
+    return generateUpdates(state)
 @app.route("/api/updateTaskState", methods=["POST"])
 def uts():
     state = "1$it probably worked idk"
     selector = "ul.tasksList"
-    if "id" in request.form and "state" in request.form:
+    if "id" in request.form and "state" in request.form and "moddate" in request.form:
         # Debug logging
         print(f"DEBUG: Received id={request.form['id']}, state={request.form['state']}")
         if not github.authorized:
@@ -314,11 +324,12 @@ def uts():
             cur = db.execute(
                 """
             UPDATE tasks
-            SET taskCompletion = ?
+            SET taskCompletion = ?, moddate = ?
             WHERE ownerID = ? AND taskID = ?;
             """,
                 (
                     new_completion_value,
+                    request.form["moddate"],
                     session["github_id"],
                     request.form["id"],
                 ),
@@ -377,6 +388,7 @@ def uts():
         return generateUpdates(state)
     else:
         return generateUpdates(f"0${state}")
+
 
 @app.route("/api/getPage", methods=["POST"])
 def getPage():
@@ -486,9 +498,6 @@ INSERT INTO tasks (
                 ),
             )
             db.commit()
-        except sqlite3.Error:
-            state = "eDatabaseError"
-            return generateUpdates(f"0${state}")
         except sqlite3.Error:
             state = "eDatabaseError"
             return generateUpdates(f"0${state}")
@@ -615,7 +624,7 @@ def etphonehome():
             cur = db.execute(
                 """
             UPDATE tasks
-            SET taskName = ?, taskValue = ?, dueBy = ?, description = ?
+            SET taskName = ?, taskValue = ?, dueBy = ?, description = ?, reoccurs = ?, moddate = ?
             WHERE ownerID = ? AND taskID = ?;
             """,
                 (
@@ -623,6 +632,8 @@ def etphonehome():
                     task_value,
                     due_by,
                     request.form["description"].strip(),
+                    request.form["reoccurs"],
+                    request.form["moddate"],
                     session["github_id"],
                     int(request.form["id"]),
                 ),

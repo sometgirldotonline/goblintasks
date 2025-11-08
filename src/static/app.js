@@ -15,7 +15,8 @@ var TaskHandler = {
                 },
                 body: new URLSearchParams({
                     id: id,
-                    state: state ? "1" : "0"
+                    state: state ? "1" : "0",
+                    moddate: Date.now()
                 })
             });
             if (!resp.ok) {
@@ -104,13 +105,15 @@ var TaskHandler = {
                     taskValue: ev.srcElement.taskValue.value,
                     description: ev.srcElement.description.value,
                     id: ev.srcElement.id.value,
+                    moddate: Date.now(),
                     dueBy: new Date(ev.srcElement.dueBy.value).getTime() / 1000,
+                    reoccurs: [...ev.srcElement.reoccurs.selectedOptions].map(e => e.value).join(","),
                 }),
                 "method": "POST"
             });
             if (!atFetch.ok) {
                 throw new Error(`Server Sent Error: ${atFetch.status}`)
-            }
+            }   
             processUpdate(await atFetch.json())
 
         }
@@ -352,6 +355,24 @@ function processUpdate(data) {
         alert(`The last action failed:
 Error Code: ${data.state.split("$")[1]}`)
     }
+    [...document.querySelectorAll(".task[reoccurs][moddate]")].forEach(el => {
+  const reoc = el.getAttribute("reoccurs")?.trim().split(",") || [];
+  var modd = new Date(Number(el.getAttribute("moddate")));
+  if (reoc.length > 0) {
+    // Calculate "day of year"
+    const dayOfYear = date =>
+      Math.floor((date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+
+    const modDay = dayOfYear(modd);
+    const todayDay = dayOfYear(new Date());
+    console.log(modDay, todayDay)
+    if (modDay !== todayDay && el.querySelector("input").checked) {
+        TaskHandler.updateTaskState(Number(el.id.split("-")[1]), false)
+    } else {
+    }
+  }
+});
+
 }
 function serverSentModal(value) {
     // Create a maintenance overlay
@@ -478,3 +499,10 @@ window.addEventListener("mouseup", (e) => {
     }
 });
 
+
+
+fetch("/api/justGimmeTheTasksBro").then(v=>{
+    v.json().then(v=>{
+        processUpdate(v)
+    })
+})

@@ -1,10 +1,23 @@
 <section class="card"><span class="title">Edit Task</span>
-  <form class="editTaskForm" onsubmit="edTask(event)" method="dialog">
+  <form class="editTaskForm" onsubmit="TaskHandler.editTask(event)" method="dialog">
     <label for="taskName">Task Name</label>
     <input type="text" name="taskName" id="taskName" required="true" value="{{ task.taskName }}">
     <label for="taskValue">Task Value</label>
     <input type="number" name="taskValue" id="taskValue" min=0 required="true" value="{{ task.taskValue }}">
     <label for="dueBy">Due By <small><i>Optional!</i></small></label>
+    <input type="date" name="dueBy" id="dueBy" value="{{ task.dueBy }}">
+    <label for="reoccurs"> Reoccuring Task: <small><i>Optional!</i></small><br>
+      <b>Ctrl+Click to select multiple or drag click</b></label>
+    <select name="reoccurs" id="" multiple style="width: 100%;height: 17ch;">
+      <option value="mon">Monday</option>
+      <option value="tue">Tuesday</option>
+      <option value="wed">Wednesday</option>
+      <option value="thu">Thursday</option>
+      <option value="fri">Friday</option>
+      <option value="sat">Saturday</option>
+      <option value="sun">Sunday</option>
+    </select>
+    <label for="dueby">Due By <small><i>Optional!</i></small></label>
     <input type="date" name="dueBy" id="dueBy" value="{{ task.dueBy }}">
     <label for="description">Description</label>
     <textarea name="description" id="description">{{ task.description }}</textarea>

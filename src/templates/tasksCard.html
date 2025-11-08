@@ -1,5 +1,5 @@
 {% for row in tasks %}
-<li class="task" id="task-{{ row.taskID }}">
+<li class="task" id="task-{{ row.taskID }}" {% if row.moddate %} moddate="{{ row.moddate }}" {% endif %} {% if row.reoccurs %} reoccurs="{{ row.reoccurs }}" {% endif %}>
     <label for="ckbx-{{ row.taskID }}">
         <!-- checked value fixed by GPT, turns out you need to remove it to uncheck :/ -->
         <input type="checkbox" class="taskcheck" id="ckbx-{{ row.taskID }}" {% if row.taskCompletion==1 %}checked{%
@@ -8,7 +8,7 @@
             <span class="taskDescription">
                 <i>Worth: </i><span class="taskworth v-currency">{{ row.taskValue }}</span> &middot;
                 <i>Due by: </i><span class="v-date dueby"> {{ 'No Due Date' if row.dueBy == -1 else ( row.dueBy |
-                    timestamp_to_time('%Y-%m-%d') ) }}</span>
+                    timestamp_to_time('%Y-%m-%d') ) }}</span> &middot; <i>Reoccurs: </i><span class="reoccurs">{{ row.reoccurs }}</span>
                 <br>
                 <details>
                     <summary><i>Task Description</i></summary>
